@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Services — Valgus Designs{% endblock %}
+
+{% block content %}
+  <main class="hero services-hero">
+    <p class="services-intro">{{ content.intro_subtitle }}</p>
+
+    <section class="services-header">
+      <div class="services-header__left">
+        <div class="services-header__image">
+          <img src="{{ content.header_image.url }}" alt="" />
+        </div>
+      </div>
+      <p class="services-header__text">{{ content.header_text }}</p>
+    </section>
+  </main>
+
+  <div class="stack services-stack">
+    {% for service in service_items %}
+      <section class="stack-card service-card">
+        <div class="service-card__inner">
+          <h2 class="service-card__title">{{ service.title }}</h2>
+          <p class="service-card__desc">{{ service.description }}</p>
+          <table class="service-card__table">
+            <tr>
+              <td>{{ service.basic_name }}</td>
+              <td>{{ service.standard_name }}</td>
+              <td>{{ service.premium_name }}</td>
+            </tr>
+            <tr>
+              <td>{{ service.basic_price }}</td>
+              <td>{{ service.standard_price }}</td>
+              <td>{{ service.premium_price }}</td>
+            </tr>
+          </table>
+          <button class="service-card__toggle" aria-expanded="false">
+            Description
+            <span class="service-card__arrow" aria-hidden="true"></span>
+          </button>
+          <div class="service-card__panel">
+            <div class="service-card__panel-inner">
+              <div class="tier">
+                <h3 class="tier__name">{{ service.basic_name }}</h3>
+                <ul class="tier__list">
+                  {% for feature in service.get_basic_features_list %}
+                    <li>{{ feature }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <div class="tier">
+                <h3 class="tier__name">{{ service.standard_name }}</h3>
+                <ul class="tier__list">
+                  {% for feature in service.get_standard_features_list %}
+                    <li>{{ feature }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <div class="tier">
+                <h3 class="tier__name">{{ service.premium_name }}</h3>
+                <ul class="tier__list">
+                  {% for feature in service.get_premium_features_list %}
+                    <li>{{ feature }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    {% endfor %}
+  </div>
+{% endblock %}

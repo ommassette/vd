@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Branding, Web & Content Studio{% endblock %}
+
+{% block content %}
+  <main class="hero">
+    <section class="hero-content">
+      <h1 class="prefix">{{ content.hero_prefix }}</h1>
+      <div class="words">
+        {% for word in hero_words %}
+          <span class="word {{ word.css_class }}">{{ word.text }}</span>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <section class="intro">
+    <div class="intro__media">
+      {% if content.intro_image %}
+        <img src="{{ content.intro_image.url }}" alt="Intro Media" />
+      {% endif %}
+    </div>
+    <p class="intro__text">{{ content.intro_text }}</p>
+  </section>
+
+  <div class="stack">
+    <section class="stack-card brand-card">
+      <h2 class="brand-name">{{ content.brand_name }}</h2>
+    </section>
+
+    <section class="stack-card about">
+      <div class="about__text">
+        <p class="about__lead">{{ content.about_lead }}</p>
+        <p class="about__body">{{ content.about_body }}</p>
+      </div>
+      <div class="about__media">
+        {% if content.about_image %}
+          <img src="{{ content.about_image.url }}" alt="About Media" />
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="stack-card industries">
+      <div class="industries__text">
+        <p class="industries__lead">{{ content.industries_lead }}</p>
+      </div>
+      <div class="industries__list">
+        {% for item in industry_items %}
+          <span class="industries__item">{{ item.name }}</span>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="stack-card dark-section">
+      <div class="dark-section__top">
+        <p class="dark-section__text">{{ content.dark_section_text }}</p>
+      </div>
+      <h2 class="dark-section__title">{{ content.dark_section_title }}</h2>
+      <div class="dark-section__media">
+        {% if content.dark_section_image %}
+          <img src="{{ content.dark_section_image.url }}" alt="Dark Section Media" />
+        {% endif %}
+      </div>
+    </section>
+  </div>
+
+  <section class="testimonials">
+    <div class="testimonials__carousel">
+      {% for testimonial in testimonials %}
+        <blockquote class="testimonial">
+          <p class="testimonial__quote">"{{ testimonial.quote }}"</p>
+          <footer class="testimonial__meta">
+            <span class="testimonial__author">{{ testimonial.author }}</span>
+            <span class="testimonial__position">{{ testimonial.position }}</span>
+          </footer>
+        </blockquote>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,15 @@
+<!-- app/templates/404.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found — Valgus Designs{% endblock %}
+
+{% block content %}
+  <main class="hero error-hero">
+    <section class="error-content">
+      <p class="error-code">404</p>
+      <p class="error-message">The page you are looking for doesn't exist or has been moved.</p>
+      <a href="{% url 'index' %}" class="error-link">Back to Home</a>
+    </section>
+  </main>
+{% endblock %}

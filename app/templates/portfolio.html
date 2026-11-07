@@ -1,0 +1,25 @@
+<!-- app/templates/portfolio.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Portfolio — Valgus Designs{% endblock %}
+
+{% block content %}
+  <main class="hero portfolio-hero">
+    <p class="portfolio-intro">{{ content.intro_subtitle }}</p>
+  </main>
+
+  {% for project in projects %}
+    <section class="project">
+      <h2 class="project__title">
+        <a href="{{ project.project_url }}" target="_blank" rel="noopener">{{ project.title }}</a>
+      </h2>
+      <div class="project__strip">
+        {% for img in project.images.all %}
+          <img src="{{ img.image.url }}" alt="" />
+        {% endfor %}
+      </div>
+      <p class="project__desc">{{ project.description }}</p>
+    </section>
+  {% endfor %}
+{% endblock %}
