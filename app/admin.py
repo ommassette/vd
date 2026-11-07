@@ -1,6 +1,9 @@
 # app/admin.py
 from django.contrib import admin
+from django.contrib.auth.models import Group, User
 from django_otp.admin import OTPAdminSite
+from django_otp.plugins.otp_totp.models import TOTPDevice
+
 from .models import (
     ContactMessage,
     ContactPageContent,
@@ -24,75 +27,80 @@ class OTPAdmin(OTPAdminSite):
 
 admin_site = OTPAdmin(name='OTPAdmin')
 
+# Register built-in auth and OTP device models
+admin_site.register(User)
+admin_site.register(Group)
+admin_site.register(TOTPDevice)
+
 
 class ProjectImageInline(admin.TabularInline):
     model = ProjectImage
     extra = 1
 
 
-@admin.register(HomePageContent)
+@admin.register(HomePageContent, site=admin_site)
 class HomePageContentAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(HeroWord)
+@admin.register(HeroWord, site=admin_site)
 class HeroWordAdmin(admin.ModelAdmin):
     list_display = ('text', 'css_class', 'order')
     list_editable = ('order',)
 
 
-@admin.register(IndustryItem)
+@admin.register(IndustryItem, site=admin_site)
 class IndustryItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'order')
     list_editable = ('order',)
 
 
-@admin.register(Testimonial)
+@admin.register(Testimonial, site=admin_site)
 class TestimonialAdmin(admin.ModelAdmin):
     list_display = ('author', 'position', 'order')
     list_editable = ('order',)
 
 
-@admin.register(ServicesPageContent)
+@admin.register(ServicesPageContent, site=admin_site)
 class ServicesPageContentAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(ServiceItem)
+@admin.register(ServiceItem, site=admin_site)
 class ServiceItemAdmin(admin.ModelAdmin):
     list_display = ('title', 'order')
     list_editable = ('order',)
 
 
-@admin.register(SiteSettings)
+@admin.register(SiteSettings, site=admin_site)
 class SiteSettingsAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(PortfolioPageContent)
+@admin.register(PortfolioPageContent, site=admin_site)
 class PortfolioPageContentAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Project)
+@admin.register(Project, site=admin_site)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'order')
     list_editable = ('order',)
     inlines = [ProjectImageInline]
 
 
-@admin.register(ContactPageContent)
+@admin.register(ContactPageContent, site=admin_site)
 class ContactPageContentAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(ContactMessage)
+@admin.register(ContactMessage, site=admin_site)
 class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('subject', 'email', 'phone', 'created_at')
     readonly_fields = ('subject', 'email', 'phone', 'message', 'created_at')
 
 
-@admin.register(FeedbackMessage)
+@admin.register(FeedbackMessage, site=admin_site)
 class FeedbackMessageAdmin(admin.ModelAdmin):
     list_display = ('position', 'email', 'created_at')
     readonly_fields = ('position', 'email', 'feedback', 'created_at')
