@@ -79,13 +79,14 @@
     </div>
   </section>
 
-  <a href="{% url 'services' %}" class="floating-cta">View Services</a>
+  <a href="{% url 'services' %}" class="floating-cta">PRICING</a>
 
   <style>
     .floating-cta {
       position: fixed;
       bottom: 30px;
-      right: 30px;
+      left: 50%;
+      transform: translateX(-50%);
       background-color: #111111;
       color: #ffffff;
       padding: 14px 24px;
