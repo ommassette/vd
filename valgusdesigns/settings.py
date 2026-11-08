@@ -167,6 +167,5 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
-    'django_otp.backends.OTPBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
