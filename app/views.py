@@ -197,4 +197,4 @@ Disallow: /static/admin/
 Host: https://valgusdesigns.com
 Sitemap: https://valgusdesigns.com/sitemap.xml
 """
-    return HttpResponse(content, content_type="text/plain")
+    return HttpResponse(content.strip(), content_type="text/plain")
