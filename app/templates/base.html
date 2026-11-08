@@ -5,12 +5,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Branding, Web & Content Studio{% endblock %}</title>
+  
+  <!-- Primary SEO Meta Tags -->
+  <title>{% block title %}Valgus Creative | Creative Agency for Web Development, Content Management & Full Stack Branding{% endblock %}</title>
+  <meta name="title" content="Valgus Creative | Creative Agency for Web Development, Content Management & Full Stack Branding">
+  <meta name="description" content="Valgus Creative is a premier creative agency based in Westlands, Nairobi, specializing in professional web development, content management, and full-stack creative branding.">
+  <meta name="keywords" content="web development Nairobi, content management Kenya, creative branding agency, web design Nairobi, Valgus Creative">
+  <meta name="author" content="Valgus Creative">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://valgusdesigns.com/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://valgusdesigns.com/">
+  <meta property="og:title" content="Valgus Creative | Web Development, Content Management & Branding">
+  <meta property="og:description" content="Creative agency in Westlands, Nairobi specializing in web development, content management, and full-stack creative branding.">
+  <meta property="og:image" content="https://res.cloudinary.com/dl4el6qws/image/upload/f_auto,q_auto/v1794145598/valgus_creative_2_w6dqpf.png">
+
+  <!-- Twitter / X -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://valgusdesigns.com/">
+  <meta property="twitter:title" content="Valgus Creative | Web Development & Branding Agency">
+  <meta property="twitter:description" content="Creative agency in Westlands, Nairobi specializing in web development, content management, and full-stack creative branding.">
+  <meta property="twitter:image" content="https://res.cloudinary.com/dl4el6qws/image/upload/f_auto,q_auto/v1794145598/valgus_creative_2_w6dqpf.png">
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dl4el6qws/image/upload/f_auto,q_auto/v1794145598/valgus_creative_2_w6dqpf.png" />
+
+  <!-- Google Fonts & Styles -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;600;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'styles.css' %}" />
+
+  <!-- Local Business Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Valgus Creative",
+    "alternateName": ["Valgus Designs", "Forces Design"],
+    "url": "https://valgusdesigns.com/",
+    "logo": "https://res.cloudinary.com/dl4el6qws/image/upload/f_auto,q_auto/v1794145598/valgus_creative_2_w6dqpf.png",
+    "image": "https://res.cloudinary.com/dl4el6qws/image/upload/f_auto,q_auto/v1794145598/valgus_creative_2_w6dqpf.png",
+    "description": "Creative Agency for Web Development, Content Management and Full Stack Creative branding.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Waiyaki Way",
+      "addressLocality": "Westlands, Nairobi",
+      "addressRegion": "Nairobi",
+      "addressCountry": "KE"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -1.2646,
+      "longitude": 36.8028
+    },
+    "priceRange": "$$",
+    "areaServed": [
+      {
+        "@type": "Country",
+        "name": "Kenya"
+      },
+      {
+        "@type": "Place",
+        "name": "Nairobi"
+      }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Agency Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Web Development",
+            "description": "Professional web development and design solutions."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Content Management",
+            "description": "Robust content management and publishing systems."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Full Stack Creative Branding",
+            "description": "Comprehensive visual identity and full-stack creative branding."
+          }
+        }
+      ]
+    }
+  }
+  </script>
 </head>
 <body>
 

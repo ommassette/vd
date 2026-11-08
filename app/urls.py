@@ -1,4 +1,3 @@
-# app/urls.py
 from django.urls import path
 from . import views
 
@@ -9,4 +8,5 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('terms/', views.terms, name='terms'),
+    path('robots.txt', views.robots_txt, name='robots_txt'),
 ]

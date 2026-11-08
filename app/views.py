@@ -185,3 +185,16 @@ def privacy_policy(request):
 @require_http_methods(["GET"])
 def terms(request):
     return render(request, 'terms.html')
+
+from django.http import HttpResponse
+
+def robots_txt(request):
+    content = """User-agent: *
+Allow: /
+Disallow: /siri/
+Disallow: /static/admin/
+
+Host: https://valgusdesigns.com
+Sitemap: https://valgusdesigns.com/sitemap.xml
+"""
+    return HttpResponse(content, content_type="text/plain")
