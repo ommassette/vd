@@ -67,7 +67,7 @@
 
   <section class="testimonials">
     <div class="testimonials__wrapper">
-      <button class="testimonials__nav testimonials__nav--prev" id="prevTestimonial" aria-label="Previous testimonial">
+      <button class="testimonials__nav testimonials__nav--prev" id="prevTestimonial" aria-label="Previous testimonial" type="button">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
@@ -85,7 +85,7 @@
         {% endfor %}
       </div>
 
-      <button class="testimonials__nav testimonials__nav--next" id="nextTestimonial" aria-label="Next testimonial">
+      <button class="testimonials__nav testimonials__nav--next" id="nextTestimonial" aria-label="Next testimonial" type="button">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
@@ -154,11 +154,11 @@
     }
 
     .testimonials__nav--prev {
-      left: 0px;
+      left: -10px;
     }
 
     .testimonials__nav--next {
-      right: 0px;
+      right: -10px;
     }
 
     .testimonials__nav:hover {
@@ -185,4 +185,42 @@
       background-color: #333333;
     }
   </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const carousel = document.querySelector('.testimonials__carousel');
+      if (!carousel) return;
+
+      const testimonials = carousel.querySelectorAll('.testimonial');
+      const prevBtn = document.getElementById('prevTestimonial');
+      const nextBtn = document.getElementById('nextTestimonial');
+      let currentIndex = 0;
+
+      if (!testimonials.length) return;
+
+      testimonials.forEach((t, i) => t.classList.toggle('is-active', i === 0));
+
+      function showTestimonial(index) {
+        testimonials.forEach((el, i) => {
+          el.classList.toggle('is-active', i === index);
+        });
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+          showTestimonial(currentIndex);
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          currentIndex = (currentIndex + 1) % testimonials.length;
+          showTestimonial(currentIndex);
+        });
+      }
+    });
+  </script>
 {% endblock %}
