@@ -66,22 +66,84 @@
   </div>
 
   <section class="testimonials">
-    <div class="testimonials__carousel">
-      {% for testimonial in testimonials %}
-        <blockquote class="testimonial">
-          <p class="testimonial__quote">"{{ testimonial.quote }}"</p>
-          <footer class="testimonial__meta">
-            <span class="testimonial__author">{{ testimonial.author }}</span>
-            <span class="testimonial__position">{{ testimonial.position }}</span>
-          </footer>
-        </blockquote>
-      {% endfor %}
+    <div class="testimonials__wrapper">
+      <button class="testimonials__nav testimonials__nav--prev" id="prevTestimonial" aria-label="Previous testimonial">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+
+      <div class="testimonials__carousel" id="testimonialsCarousel">
+        {% for testimonial in testimonials %}
+          <blockquote class="testimonial {% if forloop.first %}active{% endif %}">
+            <p class="testimonial__quote">"{{ testimonial.quote }}"</p>
+            <footer class="testimonial__meta">
+              <span class="testimonial__author">{{ testimonial.author }}</span>
+              <span class="testimonial__position">{{ testimonial.position }}</span>
+            </footer>
+          </blockquote>
+        {% endfor %}
+      </div>
+
+      <button class="testimonials__nav testimonials__nav--next" id="nextTestimonial" aria-label="Next testimonial">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
     </div>
   </section>
 
   <a href="{% url 'services' %}" class="floating-cta">PRICING</a>
 
   <style>
+    .testimonials__wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .testimonials__carousel {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      min-height: 200px;
+    }
+
+    .testimonial {
+      display: none;
+      width: 100%;
+      text-align: center;
+      margin: 0;
+    }
+
+    .testimonial.active {
+      display: block;
+    }
+
+    .testimonials__nav {
+      background: transparent;
+      border: none;
+      color: #111111;
+      cursor: pointer;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 10;
+    }
+
+    .testimonials__nav:hover {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+
     .floating-cta {
       position: fixed;
       bottom: 30px;
@@ -97,8 +159,36 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       transition: background-color 0.2s ease;
     }
+
     .floating-cta:hover {
       background-color: #333333;
     }
   </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const testimonials = document.querySelectorAll('.testimonial');
+      const prevBtn = document.getElementById('prevTestimonial');
+      const nextBtn = document.getElementById('nextTestimonial');
+      let currentIndex = 0;
+
+      if (testimonials.length === 0) return;
+
+      function showTestimonial(index) {
+        testimonials.forEach((el, i) => {
+          el.classList.toggle('active', i === index);
+        });
+      }
+
+      prevBtn.addEventListener('click', function () {
+        currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+        showTestimonial(currentIndex);
+      });
+
+      nextBtn.addEventListener('click', function () {
+        currentIndex = (currentIndex + 1) % testimonials.length;
+        showTestimonial(currentIndex);
+      });
+    });
+  </script>
 {% endblock %}
