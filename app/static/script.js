@@ -71,23 +71,37 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
   });
 });
 
-// ===== Testimonials carousel =====
+// ===== Testimonials manual carousel =====
 (function () {
   const carousel = document.querySelector('.testimonials__carousel');
   if (!carousel) return;
 
   const testimonials = carousel.querySelectorAll('.testimonial');
+  const prevBtn = document.getElementById('prevTestimonial');
+  const nextBtn = document.getElementById('nextTestimonial');
+  let currentIndex = 0;
+
   if (!testimonials.length) return;
 
   testimonials.forEach((t, i) => t.classList.toggle('is-active', i === 0));
 
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function showTestimonial(index) {
+    testimonials.forEach((el, i) => {
+      el.classList.toggle('is-active', i === index);
+    });
+  }
 
-  if (!reduced && testimonials.length > 1) {
-    let current = 0;
-    setInterval(() => {
-      current = (current + 1) % testimonials.length;
-      testimonials.forEach((t, i) => t.classList.toggle('is-active', i === current));
-    }, 5000);
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function () {
+      currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+      showTestimonial(currentIndex);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function () {
+      currentIndex = (currentIndex + 1) % testimonials.length;
+      showTestimonial(currentIndex);
+    });
   }
 })();
