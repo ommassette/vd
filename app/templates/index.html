@@ -95,4 +95,94 @@
 
   <a href="{% url 'services' %}" class="floating-cta">PRICING</a>
 
+  <style>
+    .testimonials {
+      width: 100%;
+      padding: 60px 0;
+    }
+
+    .testimonials__wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 50px;
+    }
+
+    .testimonials__carousel {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .testimonial {
+      display: none;
+      width: 100%;
+      text-align: center;
+      margin: 0;
+      position: absolute;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .testimonial.is-active {
+      display: block;
+      opacity: 1;
+      position: relative;
+    }
+
+    .testimonials__nav {
+      background: transparent;
+      border: none;
+      color: #111111;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .testimonials__nav--prev {
+      left: 0px;
+    }
+
+    .testimonials__nav--next {
+      right: 0px;
+    }
+
+    .testimonials__nav:hover {
+      opacity: 0.5;
+    }
+
+    .floating-cta {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #111111;
+      color: #ffffff;
+      padding: 14px 24px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: background-color 0.2s ease;
+    }
+
+    .floating-cta:hover {
+      background-color: #333333;
+    }
+  </style>
 {% endblock %}
