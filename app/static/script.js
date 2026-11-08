@@ -92,14 +92,16 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
   }
 
   if (prevBtn) {
-    prevBtn.addEventListener('click', function () {
+    prevBtn.addEventListener('click', function (e) {
+      e.preventDefault();
       currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
       showTestimonial(currentIndex);
     });
   }
 
   if (nextBtn) {
-    nextBtn.addEventListener('click', function () {
+    nextBtn.addEventListener('click', function (e) {
+      e.preventDefault();
       currentIndex = (currentIndex + 1) % testimonials.length;
       showTestimonial(currentIndex);
     });
