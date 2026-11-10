@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;600;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/styles.css" />
+  <link rel="stylesheet" href="{% static 'styles.css' %}" />
 </head>
 <body class="portal-body">
 
@@ -22,7 +22,7 @@
     <p class="portal__intro">Your projects, invoices, and messages — all in one place.</p>
   </div>
   
-  <form method="POST" action="{% url 'portal:logout' %}">
+  <form method="POST" action="{% url 'logout' %}">
     {% csrf_token %}
     <button type="submit" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; padding: 8px 16px; border-radius: 4px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Sign Out</button>
   </form>
