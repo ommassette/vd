@@ -1,5 +1,4 @@
 import os
-from django.http import Http404
 
 class SubdomainRoutingMiddleware:
     def __init__(self, get_response):
@@ -9,8 +8,9 @@ class SubdomainRoutingMiddleware:
         host = request.get_host().split(':')[0]
         main_domain = os.environ.get("MAIN_DOMAIN", "valgusdesigns.com")
         
-        # Allow /siri/ to use main urls even on portal subdomain
-        if host == f"portal.{main_domain}" and not request.path.startswith('/siri/'):
+        if request.path.startswith('/siri'):
+            request.urlconf = 'valgusdesigns.urls'
+        elif host == f"portal.{main_domain}":
             request.urlconf = 'portal.urls'
         else:
             request.urlconf = 'valgusdesigns.urls'
