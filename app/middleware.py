@@ -15,5 +15,4 @@ class SubdomainRoutingMiddleware:
         else:
             request.urlconf = 'valgusdesigns.urls'
             
-        response = self.get_response(request)
-        return response
+        return self.get_response(request)
