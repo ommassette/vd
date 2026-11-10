@@ -9,8 +9,8 @@ sitemaps = {
 
 urlpatterns = [
     path("siri/", admin_site.urls),
-    path("", include("app.urls")),
     path("", include(("portal.urls", "portal"), namespace="portal")),
+    path("", include("app.urls")),
     path(
         "sitemap.xml",
         sitemap,

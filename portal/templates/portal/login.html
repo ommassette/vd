@@ -25,7 +25,7 @@
     </div>
     {% endif %}
 
-    <form method="POST" action="{% url 'portal:login' %}" style="display: flex; flex-direction: column; gap: 20px;">
+    <form method="POST" action="/accounts/login/" style="display: flex; flex-direction: column; gap: 20px;">
       {% csrf_token %}
       
       <div style="display: flex; flex-direction: column; gap: 8px;">
