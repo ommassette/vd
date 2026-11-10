@@ -1,10 +1,11 @@
-# app/views.py
 import logging
 from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import send_mail
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
 
 from .models import (
@@ -24,44 +25,42 @@ from .models import (
 logger = logging.getLogger(__name__)
 
 
+@cache_page(60 * 15)
 @require_http_methods(["GET"])
 def index(request):
-    context = cache.get("index_view_data")
-    if not context:
-        logger.info("Memcached cache miss for index view. Querying database.")
-        context = {
-            'content': HomePageContent.objects.first(),
-            'hero_words': list(HeroWord.objects.all()),
-            'industry_items': list(IndustryItem.objects.all()),
-            'testimonials': list(Testimonial.objects.all()),
-        }
-        cache.set("index_view_data", context, 3600)
+    context = {
+        'content': HomePageContent.objects.first(),
+        'hero_words': list(HeroWord.objects.all()),
+        'industry_items': list(IndustryItem.objects.all()),
+        'testimonials': list(Testimonial.objects.all()),
+    }
     return render(request, 'index.html', context)
 
 
+@cache_page(60 * 15)
 @require_http_methods(["GET"])
 def services(request):
-    context = cache.get("services_view_data")
-    if not context:
-        logger.info("Memcached cache miss for services view. Querying database.")
-        context = {
-            'content': ServicesPageContent.objects.first(),
-            'service_items': list(ServiceItem.objects.all()),
-        }
-        cache.set("services_view_data", context, 3600)
+    context = {
+        'content': ServicesPageContent.objects.first(),
+        'service_items': list(ServiceItem.objects.all()),
+    }
     return render(request, 'services.html', context)
 
 
+@cache_page(60 * 15)
 @require_http_methods(["GET"])
 def portfolio(request):
-    context = cache.get("portfolio_view_data")
-    if not context:
-        logger.info("Memcached cache miss for portfolio view. Querying database.")
-        context = {
-            'content': PortfolioPageContent.objects.first(),
-            'projects': list(Project.objects.prefetch_related('images').all()),
-        }
-        cache.set("portfolio_view_data", context, 3600)
+    projects = list(Project.objects.prefetch_related('images').all())
+    
+    for project in projects:
+        for img in project.images.all():
+            if hasattr(img, 'image') and img.image:
+                img.optimized_url = img.image.build_url(fetch_format="auto", quality="auto")
+
+    context = {
+        'content': PortfolioPageContent.objects.first(),
+        'projects': projects,
+    }
     return render(request, 'portfolio.html', context)
 
 
@@ -83,7 +82,6 @@ def contact(request):
                 )
                 logger.info("Contact message saved successfully.")
 
-                # Admin notification
                 try:
                     send_mail(
                         subject=f"New Contact Inquiry: {subject}",
@@ -95,7 +93,6 @@ def contact(request):
                 except Exception as e:
                     logger.error(f"Failed to send admin contact notification: {e}")
 
-                # Automatic user reply
                 if email:
                     try:
                         send_mail(
@@ -133,7 +130,6 @@ def contact(request):
                 )
                 logger.info("Feedback saved successfully.")
 
-                # Admin notification
                 try:
                     send_mail(
                         subject="New Feedback Submission - Valgus Designs",
@@ -145,7 +141,6 @@ def contact(request):
                 except Exception as e:
                     logger.error(f"Failed to send admin feedback notification: {e}")
 
-                # Automatic user reply
                 if email:
                     try:
                         send_mail(
@@ -169,25 +164,24 @@ def contact(request):
             else:
                 messages.error(request, "Please fill out all feedback fields.")
 
-    context = cache.get("contact_view_data")
-    if not context:
-        logger.info("Memcached cache miss for contact view. Querying database.")
-        context = {'content': ContactPageContent.objects.first()}
-        cache.set("contact_view_data", context, 3600)
+    context = {'content': ContactPageContent.objects.first()}
     return render(request, 'contact.html', context)
 
 
+@cache_page(60 * 15)
 @require_http_methods(["GET"])
 def privacy_policy(request):
     return render(request, 'policy.html')
 
 
+@cache_page(60 * 15)
 @require_http_methods(["GET"])
 def terms(request):
     return render(request, 'terms.html')
 
-from django.http import HttpResponse
 
+@cache_page(60 * 15)
+@require_http_methods(["GET"])
 def robots_txt(request):
     content = """User-agent: *
 Allow: /
