@@ -19,7 +19,7 @@
       <div>
         <p class="portal__brand">Valgus Designs</p>
         <h1 class="portal__greeting">Welcome back, {{ request.user.first_name|default:request.user.username }}</h1>
-        <p class="portal__intro">Your projects, invoices, and messages — all in one place.</p>
+        <p class="portal__intro">Your projects, invoices, and messages all in one place.</p>
       </div>
       <form method="POST" action="{% url 'logout' %}" class="portal__logout-form">
         {% csrf_token %}
