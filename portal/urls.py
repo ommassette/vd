@@ -1,10 +1,9 @@
+from django.contrib.auth import views as auth_views
 from django.urls import path
-from portal import views
-
-app_name = 'portal'
+from . import views
 
 urlpatterns = [
-    path('login/', views.portal_login, name='login'),
-    path('logout/', views.portal_logout, name='logout'),
-    path('', views.portal_dashboard, name='dashboard'),
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='portal/login.html'), name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('', views.dashboard_view, name='dashboard'),
 ]
