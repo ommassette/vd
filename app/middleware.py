@@ -1,3 +1,4 @@
+# valgusdesigns/middleware.py (or wherever your SubdomainRoutingMiddleware is)
 import os
 
 class SubdomainRoutingMiddleware:
