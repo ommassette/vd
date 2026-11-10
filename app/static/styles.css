@@ -1894,10 +1894,11 @@ a:focus-visible {
   font-weight: 300;
   color: var(--ink);
   opacity: 0.7;
-  line-height: 1.5;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.6;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-word;
 }
 
 /* Mobile */
@@ -1924,9 +1925,6 @@ a:focus-visible {
   .portal-invoice__desc     { grid-column: 1 / -1; grid-row: 2; opacity: 0.75; }
   .portal-invoice__amount   { grid-column: 1; grid-row: 3; font-weight: 300; }
 
-  .portal-message__preview {
-    white-space: normal;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
