@@ -1936,3 +1936,116 @@ a:focus-visible {
   }
 }
 
+
+
+/* ===== Client Portal — Auth (sign in) ===== */
+.portal--auth {
+  max-width: 480px;
+  margin: clamp(3rem, 8vw, 6rem) auto;
+  padding-left: clamp(1rem, 3vw, 2.5rem);
+  padding-right: clamp(1rem, 3vw, 2.5rem);
+  padding-bottom: clamp(3rem, 8vw, 5rem);
+}
+
+.portal--auth .portal__header {
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.portal--auth .portal__greeting {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+/* Error banner — pink accent, no harsh red */
+.auth-error {
+  display: block;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+  padding: 0.9rem 1rem 0.9rem 1.1rem;
+  border-left: 3px solid #ff4255;
+  background: rgba(255, 66, 85, 0.08);
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+/* Form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+.auth-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.auth-form__field label {
+  font-size: 0.72rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+}
+
+.auth-form__field input {
+  width: 100%;
+  padding: 0.75rem 0;
+  font-family: inherit;
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(34, 34, 34, 0.3);
+  outline: none;
+  transition: border-color 0.25s ease;
+}
+
+.auth-form__field input:focus {
+  border-bottom-color: var(--ink);
+}
+
+/* Submit — borderless, letter-spacing hover like every other button */
+.auth-form__submit {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  padding: 0.85rem 0;
+  font-family: inherit;
+  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: letter-spacing 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+}
+
+.auth-form__submit:hover {
+  letter-spacing: 0.24em;
+  opacity: 0.7;
+}
+
+.auth-form__submit:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+@media (max-width: 480px) {
+  .portal--auth {
+    margin-top: 2rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-form__submit {
+    transition: none;
+  }
+}
