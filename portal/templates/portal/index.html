@@ -15,17 +15,18 @@
 
   <main class="portal">
 
-  <header class="portal__header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+<header class="portal__header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
   <div>
     <p class="portal__brand">Valgus Designs</p>
     <h1 class="portal__greeting">Welcome back, {{ request.user.first_name|default:request.user.username }}</h1>
     <p class="portal__intro">Your projects, invoices, and messages — all in one place.</p>
   </div>
-  
-  <form method="POST" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; padding: 8px 16px; border-radius: 4px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Sign Out</button>
-  </form>
+  <div>
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" style="background: transparent; border: 1px solid #111; color: #111; padding: 10px 20px; border-radius: 0; font-family: inherit; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer;">Sign Out</button>
+    </form>
+  </div>
 </header>
 
     <section class="portal__stats">
