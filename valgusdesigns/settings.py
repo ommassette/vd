@@ -183,3 +183,6 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 LOGIN_URL = '/accounts/login/'
 LOGOUT_URL = '/accounts/logout/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/var/www/valgusdesigns/media'
