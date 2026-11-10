@@ -1,0 +1,121 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal — Valgus Designs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body class="portal-body">
+
+  <main class="portal">
+
+  <header class="portal__header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+  <div>
+    <p class="portal__brand">Valgus Designs</p>
+    <h1 class="portal__greeting">Welcome back, {{ request.user.first_name|default:request.user.username }}</h1>
+    <p class="portal__intro">Your projects, invoices, and messages — all in one place.</p>
+  </div>
+  
+  <form method="POST" action="{% url 'portal:logout' %}">
+    {% csrf_token %}
+    <button type="submit" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; padding: 8px 16px; border-radius: 4px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Sign Out</button>
+  </form>
+</header>
+
+    <section class="portal__stats">
+      <div class="portal-stat">
+        <span class="portal-stat__label">Active Projects</span>
+        <span class="portal-stat__value">{{ stats.active_projects }}</span>
+      </div>
+      <div class="portal-stat">
+        <span class="portal-stat__label">Pending Invoices</span>
+        <span class="portal-stat__value">{{ stats.pending_invoices }}</span>
+      </div>
+      <div class="portal-stat">
+        <span class="portal-stat__label">Messages</span>
+        <span class="portal-stat__value">{{ stats.unread_messages }}</span>
+      </div>
+      <div class="portal-stat">
+        <span class="portal-stat__label">Delivered</span>
+        <span class="portal-stat__value">{{ stats.delivered }}</span>
+      </div>
+    </section>
+
+    <section class="portal__section">
+      <h2 class="portal__section-title">Active Projects</h2>
+      <div class="portal__projects">
+        {% for project in projects %}
+        <article class="portal-project">
+          <div class="portal-project__head">
+            <h3 class="portal-project__name">{{ project.name }}</h3>
+            <span class="portal-project__status">{{ project.status }}</span>
+          </div>
+          <p class="portal-project__desc">{{ project.description }}</p>
+          <div class="portal-project__progress">
+            <div class="portal-project__bar" style="--p: {{ project.progress_percentage }}%"></div>
+          </div>
+          <div class="portal-project__foot">
+            <span class="portal-project__meta">Due {{ project.due_date|date:"d M Y" }} · {{ project.progress_percentage }}% complete</span>
+            <a href="#" class="portal-project__link">Open</a>
+          </div>
+        </article>
+        {% empty %}
+        <p class="portal-project__desc">No active projects found.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="portal__section">
+      <h2 class="portal__section-title">Recent Invoices</h2>
+      <ul class="portal-invoices">
+        {% for invoice in invoices %}
+        <li class="portal-invoice">
+          <span class="portal-invoice__id">{{ invoice.invoice_number }}</span>
+          <span class="portal-invoice__desc">{{ invoice.description }}</span>
+          <span class="portal-invoice__amount">${{ invoice.amount|intcomma }}</span>
+          <span class="portal-invoice__actions">
+            {% if invoice.status == 'Paid' %}
+              <span class="portal-invoice__status portal-invoice__status--paid">Paid</span>
+              {% if invoice.receipt_file %}
+                <a href="{{ invoice.receipt_file.url }}" class="portal-invoice__download" download>Download Receipt</a>
+              {% endif %}
+            {% else %}
+              <span class="portal-invoice__status portal-invoice__status--due">Due</span>
+            {% endif %}
+          </span>
+        </li>
+        {% empty %}
+        <li class="portal-invoice">
+          <span class="portal-invoice__desc">No invoices recorded.</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="portal__section">
+      <h2 class="portal__section-title">Messages</h2>
+      <ul class="portal-messages">
+        {% for message in messages %}
+        <li class="portal-message">
+          <span class="portal-message__from">{{ message.sender_name }}</span>
+          <span class="portal-message__time">{{ message.created_at|naturaltime }}</span>
+          <span class="portal-message__preview">{{ message.content }}</span>
+        </li>
+        {% empty %}
+        <li class="portal-message">
+          <span class="portal-message__preview">No messages available.</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+  </main>
+
+</body>
+</html>
