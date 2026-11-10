@@ -107,3 +107,76 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     });
   }
 })();
+// ===== Image lightbox =====
+(function () {
+  const lightbox = document.querySelector('.lightbox');
+  if (!lightbox) return;
+
+  const imgEl = lightbox.querySelector('.lightbox__img');
+  const closeBtn = lightbox.querySelector('.lightbox__close');
+  const prevBtn = lightbox.querySelector('.lightbox__prev');
+  const nextBtn = lightbox.querySelector('.lightbox__next');
+
+  let currentGroup = [];
+  let currentIndex = 0;
+  let lastFocused = null;
+
+  function show(index) {
+    if (!currentGroup.length) return;
+    currentIndex = (index + currentGroup.length) % currentGroup.length;
+    const source = currentGroup[currentIndex];
+    imgEl.src = source.src;
+    imgEl.alt = source.alt || '';
+    lightbox.classList.toggle('lightbox--single', currentGroup.length <= 1);
+  }
+
+  function open(sourceImg) {
+    const strip = sourceImg.closest('.project__strip');
+    currentGroup = strip
+      ? Array.from(strip.querySelectorAll('img'))
+      : [sourceImg];
+    const idx = Math.max(0, currentGroup.indexOf(sourceImg));
+
+    lastFocused = document.activeElement;
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    show(idx);
+    closeBtn.focus();
+  }
+
+  function close() {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    imgEl.src = '';
+    imgEl.alt = '';
+    if (lastFocused && typeof lastFocused.focus === 'function') {
+      lastFocused.focus();
+    }
+  }
+
+  function prev() { show(currentIndex - 1); }
+  function next() { show(currentIndex + 1); }
+
+  document.querySelectorAll('.project__strip img').forEach(img => {
+    img.addEventListener('click', () => open(img));
+  });
+
+  closeBtn.addEventListener('click', close);
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  // Click on the dark backdrop closes
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) close();
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('is-open')) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft') prev();
+    else if (e.key === 'ArrowRight') next();
+  });
+})();

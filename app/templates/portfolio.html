@@ -1,4 +1,3 @@
-<!-- app/templates/portfolio.html -->
 {% extends 'base.html' %}
 {% load static %}
 
@@ -16,10 +15,18 @@
       </h2>
       <div class="project__strip">
         {% for img in project.images.all %}
-          <img src="{{ img.image.url }}" alt="" />
+          <img src="{{ img.image.url }}" alt="{{ project.title }} — image {{ forloop.counter }}" />
         {% endfor %}
       </div>
       <p class="project__desc">{{ project.description }}</p>
     </section>
   {% endfor %}
+
+  <!-- Lightbox -->
+  <div class="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button type="button" class="lightbox__close" aria-label="Close">&times;</button>
+    <button type="button" class="lightbox__prev" aria-label="Previous image">&#8249;</button>
+    <button type="button" class="lightbox__next" aria-label="Next image">&#8250;</button>
+    <img class="lightbox__img" src="" alt="" />
+  </div>
 {% endblock %}
