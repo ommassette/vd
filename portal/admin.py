@@ -12,9 +12,17 @@ class CustomUserAdmin(UserAdmin):
             obj.set_password(password)
         super().save_model(request, obj, form, change)
 
-admin.site.unregister(User)
+try:
+    admin.site.unregister(User)
+except admin.sites.NotRegistered:
+    pass
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(User, UserAdmin, site=admin_site)
+
+try:
+    admin_site.unregister(User)
+except admin_site.NotRegistered:
+    pass
+admin_site.register(User, UserAdmin)
 
 @admin.register(Project, site=admin_site)
 class ProjectAdmin(admin.ModelAdmin):
@@ -33,4 +41,3 @@ class MessageAdmin(admin.ModelAdmin):
     list_display = ('sender_name', 'client', 'is_read', 'created_at')
     list_filter = ('is_read', 'created_at')
     search_fields = ('sender_name', 'content', 'client__username', 'client__email')
-    
