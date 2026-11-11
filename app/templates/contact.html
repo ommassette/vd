@@ -11,19 +11,23 @@
       <form class="contact-wizard" method="post" novalidate>
         {% csrf_token %}
 
-        <!-- Step 1: Service -->
-        <div class="contact-step is-active" data-step="1">
-          <h3 class="contact-step__question">What service are you interested in?</h3>
-          <div class="contact-choices">
-            {% for service in service_items %}
-              {% if service.title %}
-                <button type="button" class="contact-choice" data-value="{{ service.title }}">{{ service.title }}</button>
-              {% endif %}
-            {% empty %}
-              <p class="contact-step__empty">No services available at the moment.</p>
-            {% endfor %}
-          </div>
-        </div>
+  <!-- Step 1: Services (multi-select) -->
+<div class="contact-step is-active" data-step="1">
+  <h3 class="contact-step__question">Which services are you interested in?</h3>
+  <p class="contact-step__hint">Select one or more</p>
+  <div class="contact-choices">
+    {% for service in service_items %}
+      {% if service.title %}
+        <button type="button" class="contact-choice" data-value="{{ service.title }}">{{ service.title }}</button>
+      {% endif %}
+    {% empty %}
+      <p class="contact-step__empty">No services available at the moment.</p>
+    {% endfor %}
+  </div>
+  {% if service_items %}
+    <button type="button" class="contact-form__submit" disabled>Continue</button>
+  {% endif %}
+</div>
 
         <!-- Step 2: Timeline -->
         <div class="contact-step" data-step="2">

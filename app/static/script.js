@@ -187,13 +187,13 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
 
   const serviceInput = wizard.querySelector('input[name="service"]');
   const timelineInput = wizard.querySelector('input[name="timeline"]');
+  const selectedServices = new Set();
 
   function goToStep(stepNum) {
     const currentStep = wizard.querySelector('.contact-step.is-active');
     const nextStep = wizard.querySelector(`.contact-step[data-step="${stepNum}"]`);
     if (!currentStep || !nextStep || currentStep === nextStep) return;
 
-    // Lock current height so the transition between steps is smooth
     wizard.style.height = wizard.offsetHeight + 'px';
 
     currentStep.classList.remove('is-active');
@@ -203,21 +203,39 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
       wizard.style.height = nextStep.offsetHeight + 'px';
     });
 
-    // Clear inline height after the transition finishes
     setTimeout(() => {
       wizard.style.height = '';
     }, 450);
   }
 
-  // Step 1 — service choice
-  wizard.querySelectorAll('.contact-step[data-step="1"] .contact-choice').forEach(choice => {
+  // Step 1 — multi-select services
+  const serviceChoices = wizard.querySelectorAll('.contact-step[data-step="1"] .contact-choice');
+  const continueBtn = wizard.querySelector('.contact-step[data-step="1"] .contact-form__submit');
+
+  serviceChoices.forEach(choice => {
     choice.addEventListener('click', () => {
-      serviceInput.value = choice.dataset.value;
-      goToStep(2);
+      const value = choice.dataset.value;
+
+      if (selectedServices.has(value)) {
+        selectedServices.delete(value);
+        choice.classList.remove('is-selected');
+      } else {
+        selectedServices.add(value);
+        choice.classList.add('is-selected');
+      }
+
+      serviceInput.value = Array.from(selectedServices).join(', ');
+      if (continueBtn) continueBtn.disabled = selectedServices.size === 0;
     });
   });
 
-  // Step 2 — timeline choice
+  if (continueBtn) {
+    continueBtn.addEventListener('click', () => {
+      if (selectedServices.size > 0) goToStep(2);
+    });
+  }
+
+  // Step 2 — single-select timeline (unchanged behaviour: click advances)
   wizard.querySelectorAll('.contact-step[data-step="2"] .contact-choice').forEach(choice => {
     choice.addEventListener('click', () => {
       timelineInput.value = choice.dataset.value;

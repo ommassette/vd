@@ -2296,3 +2296,26 @@ a:focus-visible {
   .contact-step.is-active { animation: none; }
   .contact-choice { transition: none; }
 }
+
+/* Multi-select additions */
+.contact-step__hint {
+  font-size: 0.78rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  opacity: 0.55;
+  margin: -0.5rem 0 0.5rem;
+}
+
+.contact-choice.is-selected {
+  font-weight: 600;
+  border-bottom-color: var(--ink);
+}
+
+/* Disabled Continue button */
+.contact-wizard .contact-form__submit:disabled,
+.contact-wizard .contact-form__submit:disabled:hover {
+  opacity: 0.35;
+  cursor: not-allowed;
+  letter-spacing: 0.14em;
+}
