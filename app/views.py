@@ -121,7 +121,7 @@ def contact(request):
                         logger.error(f"Failed to send client auto-reply: {e}")
 
                 if email:
-                    request.session['contact_success'] = "Message sent successfully. Check your inbox — we'll be in touch."
+                    request.session['contact_success'] = "Message sent successfully. Check your inbox, we'll be in touch."
                 else:
                     request.session['contact_success'] = "Thanks! We'll call you shortly."
 
