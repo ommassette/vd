@@ -2337,3 +2337,28 @@ a:focus-visible {
 .contact-form__field input[aria-invalid="true"] {
   border-bottom-color: #ff4255;
 }
+
+/* ===== Django messages ===== */
+.messages {
+  max-width: 520px;
+  margin: 1.5rem auto 0;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 20;
+}
+
+.message {
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  border-left: 3px solid var(--ink);
+  background: rgba(34, 34, 34, 0.05);
+}
+
+.message--success { border-left-color: #22935d; }
+.message--error   { border-left-color: #ff4255; }
+
+.message + .message { margin-top: 0.5rem; }

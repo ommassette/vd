@@ -328,3 +328,12 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     if (phoneInput && phoneRaw) phoneInput.value = normalizePhone(phoneRaw);
   });
 })();
+// Auto-dismiss flash messages
+document.querySelectorAll('.messages .message').forEach(el => {
+  setTimeout(() => {
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(-8px)';
+    setTimeout(() => el.remove(), 700);
+  }, 5000);
+});

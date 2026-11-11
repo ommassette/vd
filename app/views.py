@@ -82,6 +82,7 @@ def contact(request):
                 )
                 logger.info("Contact message saved successfully.")
 
+                # ---- Admin notification ----
                 contact_lines = [f"Service: {service}", f"Timeline: {timeline}"]
                 if email:
                     contact_lines.append(f"Email: {email}")
@@ -99,10 +100,46 @@ def contact(request):
                 except Exception as e:
                     logger.error(f"Failed to send admin contact notification: {e}")
 
-                messages.success(request, "Message sent successfully. We'll get back to you shortly.")
+                # ---- Client auto-reply (only if they gave an email) ----
+                if email:
+                    try:
+                        send_mail(
+                            subject="We received your inquiry - Valgus Designs",
+                            message=(
+                                f"Hello,\n\n"
+                                f"Thank you for reaching out to Valgus Designs.\n\n"
+                                f"We've received your request regarding:\n"
+                                f"  • Service: {service}\n"
+                                f"  • Timeline: {timeline}\n\n"
+                                f"Our team will review your inquiry and get back to you shortly.\n\n"
+                                f"Best regards,\n"
+                                f"Valgus Designs Team"
+                            ),
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[email],
+                            fail_silently=True,
+                        )
+                        logger.info(f"Auto-reply sent to {email}.")
+                    except Exception as e:
+                        logger.error(f"Failed to send client auto-reply: {e}")
+
+                # ---- Tailored success message ----
+                if email:
+                    messages.success(
+                        request,
+                        "Message sent successfully. Check your inbox — we'll be in touch."
+                    )
+                else:
+                    messages.success(
+                        request,
+                        "Thanks! We'll call you shortly."
+                    )
                 return redirect('contact')
             else:
-                messages.error(request, "Please complete all steps and provide a phone number or email.")
+                messages.error(
+                    request,
+                    "Please complete all steps and provide a phone number or email."
+                )
 
         elif 'position' in request.POST:
             position = request.POST.get('position')

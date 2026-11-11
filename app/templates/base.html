@@ -107,6 +107,14 @@
 </head>
 <body>
 
+{% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div class="message message--{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
   <nav class="nav">
     <a href="{% url 'services' %}">SERVICES</a>
     <a href="{% url 'portfolio' %}">PORTFOLIO</a>
