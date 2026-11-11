@@ -187,7 +187,9 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
 
   const serviceInput = wizard.querySelector('input[name="service"]');
   const timelineInput = wizard.querySelector('input[name="timeline"]');
+  const emailInput = wizard.querySelector('input[name="email"]');
   const phoneInput = wizard.querySelector('input[name="phone"]');
+  const emailError = wizard.querySelector('[data-email-error]');
   const phoneError = wizard.querySelector('[data-phone-error]');
   const selectedServices = new Set();
 
@@ -197,7 +199,6 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     if (!currentStep || !nextStep || currentStep === nextStep) return;
 
     wizard.style.height = wizard.offsetHeight + 'px';
-
     currentStep.classList.remove('is-active');
     nextStep.classList.add('is-active');
 
@@ -210,14 +211,13 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     }, 450);
   }
 
-  // Step 1 — multi-select services
+  // ---- Step 1: multi-select services ----
   const serviceChoices = wizard.querySelectorAll('.contact-step[data-step="1"] .contact-choice');
   const continueBtn = wizard.querySelector('.contact-step[data-step="1"] .contact-form__submit');
 
   serviceChoices.forEach(choice => {
     choice.addEventListener('click', () => {
       const value = choice.dataset.value;
-
       if (selectedServices.has(value)) {
         selectedServices.delete(value);
         choice.classList.remove('is-selected');
@@ -225,7 +225,6 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
         selectedServices.add(value);
         choice.classList.add('is-selected');
       }
-
       serviceInput.value = Array.from(selectedServices).join(', ');
       if (continueBtn) continueBtn.disabled = selectedServices.size === 0;
     });
@@ -237,7 +236,7 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     });
   }
 
-  // Step 2 — single-select timeline
+  // ---- Step 2: timeline ----
   wizard.querySelectorAll('.contact-step[data-step="2"] .contact-choice').forEach(choice => {
     choice.addEventListener('click', () => {
       timelineInput.value = choice.dataset.value;
@@ -245,60 +244,87 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     });
   });
 
-  // ===== Phone validation =====
+  // ---- Step 3: validation helpers ----
   function normalizePhone(raw) {
     if (!raw) return '';
     let digits = raw.replace(/[^\d+]/g, '');
-    if (digits.indexOf('+') > 0) {
-      digits = digits.replace(/\+/g, '');
-    }
+    if (digits.indexOf('+') > 0) digits = digits.replace(/\+/g, '');
     return digits;
   }
 
   function isValidPhone(raw) {
     const value = normalizePhone(raw);
     if (!value) return false;
-    // 7–15 digits, optional leading +
     return /^\+?\d{7,15}$/.test(value);
   }
 
-  function showPhoneError(message) {
-    if (!phoneError) return;
-    phoneError.textContent = message;
-    phoneError.hidden = false;
-    if (phoneInput) phoneInput.setAttribute('aria-invalid', 'true');
+  function isValidEmail(raw) {
+    if (!raw) return false;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(raw.trim());
   }
 
-  function clearPhoneError() {
-    if (!phoneError) return;
-    phoneError.hidden = true;
-    phoneError.textContent = '';
+  function showError(el, message) {
+    if (!el) return;
+    el.textContent = message;
+    el.hidden = false;
+  }
+
+  function clearError(el) {
+    if (!el) return;
+    el.hidden = true;
+    el.textContent = '';
+  }
+
+  function clearAllErrors() {
+    clearError(emailError);
+    clearError(phoneError);
+    if (emailInput) emailInput.removeAttribute('aria-invalid');
     if (phoneInput) phoneInput.removeAttribute('aria-invalid');
   }
 
-  if (phoneInput) {
-    phoneInput.addEventListener('input', clearPhoneError);
-  }
+  if (emailInput) emailInput.addEventListener('input', clearAllErrors);
+  if (phoneInput) phoneInput.addEventListener('input', clearAllErrors);
 
   wizard.addEventListener('submit', (e) => {
-    const raw = phoneInput ? phoneInput.value : '';
+    clearAllErrors();
 
-    if (!raw || !raw.trim()) {
+    const emailRaw = emailInput ? emailInput.value.trim() : '';
+    const phoneRaw = phoneInput ? phoneInput.value.trim() : '';
+
+    // Both empty → blocked
+    if (!emailRaw && !phoneRaw) {
       e.preventDefault();
-      showPhoneError('Please enter your phone number.');
-      if (phoneInput) phoneInput.focus();
+      showError(phoneError, 'Please enter a phone number or an email address.');
+      if (phoneInput) {
+        phoneInput.setAttribute('aria-invalid', 'true');
+        phoneInput.focus();
+      }
       return;
     }
 
-    if (!isValidPhone(raw)) {
+    // Email filled but invalid
+    if (emailRaw && !isValidEmail(emailRaw)) {
       e.preventDefault();
-      showPhoneError('Please enter a valid phone number (7–15 digits, e.g. +254712345678).');
-      if (phoneInput) phoneInput.focus();
+      showError(emailError, 'Please enter a valid email address.');
+      if (emailInput) {
+        emailInput.setAttribute('aria-invalid', 'true');
+        emailInput.focus();
+      }
       return;
     }
 
-    // Normalize before submit so backend gets a clean value
-    if (phoneInput) phoneInput.value = normalizePhone(raw);
-    clearPhoneError();
+    // Phone filled but invalid
+    if (phoneRaw && !isValidPhone(phoneRaw)) {
+      e.preventDefault();
+      showError(phoneError, 'Please enter a valid phone number (7–15 digits).');
+      if (phoneInput) {
+        phoneInput.setAttribute('aria-invalid', 'true');
+        phoneInput.focus();
+      }
+      return;
+    }
+
+    // Normalize phone before submit
+    if (phoneInput && phoneRaw) phoneInput.value = normalizePhone(phoneRaw);
   });
 })();

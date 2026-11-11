@@ -96,8 +96,8 @@ class ContactPageContentAdmin(admin.ModelAdmin):
 
 @admin.register(ContactMessage, site=admin_site)
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('service', 'timeline', 'phone', 'created_at')
-    readonly_fields = ('service', 'timeline', 'phone', 'created_at')
+    list_display = ('service', 'timeline', 'email', 'phone', 'created_at')
+    readonly_fields = ('service', 'timeline', 'email', 'phone', 'created_at')
 
 
 @admin.register(FeedbackMessage, site=admin_site)

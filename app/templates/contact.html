@@ -40,22 +40,37 @@
           </div>
         </div>
 
-        <!-- Step 3: Phone -->
+                <!-- Step 3: Contact details -->
         <div class="contact-step" data-step="3">
-          <h3 class="contact-step__question">Leave your phone number and we'll get back to you</h3>
+          <h3 class="contact-step__question">How can we reach you?</h3>
+          <p class="contact-step__hint">Email or phone at least one is required</p>
+
+          <div class="contact-form__field">
+            <label for="contact-email">Email</label>
+            <input
+              type="email"
+              id="contact-email"
+              name="email"
+              autocomplete="email"
+              inputmode="email"
+              placeholder="you@example.com"
+            />
+            <p class="contact-form__error" data-email-error hidden></p>
+          </div>
+
           <div class="contact-form__field">
             <label for="contact-phone">Phone Number</label>
             <input
               type="tel"
               id="contact-phone"
               name="phone"
-              required
               autocomplete="tel"
               inputmode="tel"
               placeholder="+254 712 345 678"
             />
             <p class="contact-form__error" data-phone-error hidden></p>
           </div>
+
           <button type="submit" class="contact-form__submit">Submit</button>
         </div>
 

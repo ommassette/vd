@@ -70,24 +70,28 @@ def contact(request):
         if 'service' in request.POST:
             service = request.POST.get('service')
             timeline = request.POST.get('timeline')
-            phone = request.POST.get('phone')
+            email = (request.POST.get('email') or '').strip()
+            phone = (request.POST.get('phone') or '').strip()
 
-            if service and timeline and phone:
+            if service and timeline and (email or phone):
                 ContactMessage.objects.create(
                     service=service,
                     timeline=timeline,
-                    phone=phone,
+                    email=email or None,
+                    phone=phone or None,
                 )
                 logger.info("Contact message saved successfully.")
+
+                contact_lines = [f"Service: {service}", f"Timeline: {timeline}"]
+                if email:
+                    contact_lines.append(f"Email: {email}")
+                if phone:
+                    contact_lines.append(f"Phone: {phone}")
 
                 try:
                     send_mail(
                         subject=f"New Contact Inquiry: {service}",
-                        message=(
-                            f"Service: {service}\n"
-                            f"Timeline: {timeline}\n"
-                            f"Phone: {phone}"
-                        ),
+                        message="\n".join(contact_lines),
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[settings.EMAIL_HOST_USER],
                         fail_silently=True,
@@ -95,10 +99,10 @@ def contact(request):
                 except Exception as e:
                     logger.error(f"Failed to send admin contact notification: {e}")
 
-                messages.success(request, "Message sent successfully. We'll call you shortly.")
+                messages.success(request, "Message sent successfully. We'll get back to you shortly.")
                 return redirect('contact')
             else:
-                messages.error(request, "Please complete all steps.")
+                messages.error(request, "Please complete all steps and provide a phone number or email.")
 
         elif 'position' in request.POST:
             position = request.POST.get('position')
