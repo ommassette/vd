@@ -231,14 +231,13 @@ class ContactPageContent(models.Model):
 
 
 class ContactMessage(models.Model):
-    subject = models.CharField(max_length=255, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
+    service = models.CharField(max_length=255, blank=True, null=True)
+    timeline = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=50, blank=True, null=True)
-    message = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.subject or 'No Subject'} - {self.email or 'No Email'}"
+        return f"{self.service or 'General'} — {self.phone or 'No Phone'}"
 
 
 class FeedbackMessage(models.Model):

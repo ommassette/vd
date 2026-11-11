@@ -180,3 +180,48 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     else if (e.key === 'ArrowRight') next();
   });
 })();
+// ===== Contact wizard =====
+(function () {
+  const wizard = document.querySelector('.contact-wizard');
+  if (!wizard) return;
+
+  const serviceInput = wizard.querySelector('input[name="service"]');
+  const timelineInput = wizard.querySelector('input[name="timeline"]');
+
+  function goToStep(stepNum) {
+    const currentStep = wizard.querySelector('.contact-step.is-active');
+    const nextStep = wizard.querySelector(`.contact-step[data-step="${stepNum}"]`);
+    if (!currentStep || !nextStep || currentStep === nextStep) return;
+
+    // Lock current height so the transition between steps is smooth
+    wizard.style.height = wizard.offsetHeight + 'px';
+
+    currentStep.classList.remove('is-active');
+    nextStep.classList.add('is-active');
+
+    requestAnimationFrame(() => {
+      wizard.style.height = nextStep.offsetHeight + 'px';
+    });
+
+    // Clear inline height after the transition finishes
+    setTimeout(() => {
+      wizard.style.height = '';
+    }, 450);
+  }
+
+  // Step 1 — service choice
+  wizard.querySelectorAll('.contact-step[data-step="1"] .contact-choice').forEach(choice => {
+    choice.addEventListener('click', () => {
+      serviceInput.value = choice.dataset.value;
+      goToStep(2);
+    });
+  });
+
+  // Step 2 — timeline choice
+  wizard.querySelectorAll('.contact-step[data-step="2"] .contact-choice').forEach(choice => {
+    choice.addEventListener('click', () => {
+      timelineInput.value = choice.dataset.value;
+      goToStep(3);
+    });
+  });
+})();

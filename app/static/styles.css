@@ -2208,3 +2208,91 @@ a:focus-visible {
     transition: none;
   }
 }
+
+/* ===== Contact wizard (multi-step form) ===== */
+.contact-wizard {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  max-width: 520px;
+  width: 100%;
+  justify-self: start;
+  align-self: start;
+  transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+.contact-step {
+  display: none;
+}
+
+.contact-step.is-active {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  animation: contactStepIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes contactStepIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.contact-step__question {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 200;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 clamp(0.5rem, 1vw, 0.75rem);
+}
+
+.contact-step__empty {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--ink);
+  opacity: 0.7;
+  margin: 0;
+}
+
+.contact-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.contact-choice {
+  display: block;
+  width: 100%;
+  padding: 1rem 0;
+  font-family: inherit;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  font-weight: 400;
+  text-align: left;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(34, 34, 34, 0.2);
+  cursor: pointer;
+  transition: letter-spacing 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.3s ease,
+              border-color 0.3s ease,
+              padding-left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contact-choice:hover {
+  letter-spacing: 0.04em;
+  padding-left: 0.4rem;
+  border-bottom-color: var(--ink);
+}
+
+.contact-choice:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-wizard { transition: none; }
+  .contact-step.is-active { animation: none; }
+  .contact-choice { transition: none; }
+}

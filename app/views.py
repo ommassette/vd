@@ -51,7 +51,7 @@ def services(request):
 @require_http_methods(["GET"])
 def portfolio(request):
     projects = list(Project.objects.prefetch_related('images').all())
-    
+
     for project in projects:
         for img in project.images.all():
             if hasattr(img, 'image') and img.image:
@@ -67,25 +67,27 @@ def portfolio(request):
 @require_http_methods(["GET", "POST"])
 def contact(request):
     if request.method == 'POST':
-        if 'subject' in request.POST:
-            subject = request.POST.get('subject')
-            email = request.POST.get('email')
+        if 'service' in request.POST:
+            service = request.POST.get('service')
+            timeline = request.POST.get('timeline')
             phone = request.POST.get('phone')
-            message_text = request.POST.get('message')
 
-            if subject and email and phone and message_text:
+            if service and timeline and phone:
                 ContactMessage.objects.create(
-                    subject=subject,
-                    email=email,
+                    service=service,
+                    timeline=timeline,
                     phone=phone,
-                    message=message_text
                 )
                 logger.info("Contact message saved successfully.")
 
                 try:
                     send_mail(
-                        subject=f"New Contact Inquiry: {subject}",
-                        message=f"Email: {email}\nPhone: {phone}\nMessage: {message_text}",
+                        subject=f"New Contact Inquiry: {service}",
+                        message=(
+                            f"Service: {service}\n"
+                            f"Timeline: {timeline}\n"
+                            f"Phone: {phone}"
+                        ),
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[settings.EMAIL_HOST_USER],
                         fail_silently=True,
@@ -93,29 +95,10 @@ def contact(request):
                 except Exception as e:
                     logger.error(f"Failed to send admin contact notification: {e}")
 
-                if email:
-                    try:
-                        send_mail(
-                            subject="We received your inquiry - Valgus Designs",
-                            message=(
-                                f"Hello,\n\n"
-                                f"Thank you for contacting Valgus Designs.\n\n"
-                                f"We have received your message regarding '{subject}'. "
-                                f"Our team will review your inquiry and get back to you shortly.\n\n"
-                                f"Best regards,\n"
-                                f"Valgus Designs Team"
-                            ),
-                            from_email=settings.DEFAULT_FROM_EMAIL,
-                            recipient_list=[email],
-                            fail_silently=True,
-                        )
-                    except Exception as e:
-                        logger.error(f"Failed to send user contact confirmation: {e}")
-
-                messages.success(request, "Message sent successfully.")
+                messages.success(request, "Message sent successfully. We'll call you shortly.")
                 return redirect('contact')
             else:
-                messages.error(request, "Please fill out all required fields.")
+                messages.error(request, "Please complete all steps.")
 
         elif 'position' in request.POST:
             position = request.POST.get('position')
@@ -164,7 +147,10 @@ def contact(request):
             else:
                 messages.error(request, "Please fill out all feedback fields.")
 
-    context = {'content': ContactPageContent.objects.first()}
+    context = {
+        'content': ContactPageContent.objects.first(),
+        'service_items': list(ServiceItem.objects.all()),
+    }
     return render(request, 'contact.html', context)
 
 
