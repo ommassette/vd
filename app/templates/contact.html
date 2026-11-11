@@ -1,4 +1,3 @@
-<!-- app/templates/contact.html -->
 {% extends 'base.html' %}
 {% load static %}
 
@@ -8,76 +7,87 @@
   <main class="hero contact-hero">
     <section class="contact-section">
 
-      <form class="contact-wizard" method="post" novalidate>
-        {% csrf_token %}
+      {% if contact_success %}
+        <div class="contact-success">
+          <h3 class="contact-step__question">Thank you!</h3>
+          <p class="contact-success__msg">{{ contact_success }}</p>
+          <a href="{% url 'contact' %}" class="contact-form__submit">Send Another Message</a>
+        </div>
+      {% else %}
+        <form class="contact-wizard" method="post" novalidate>
+          {% csrf_token %}
 
-        <!-- Step 1: Services (multi-select) -->
-        <div class="contact-step is-active" data-step="1">
-          <h3 class="contact-step__question">Which services are you interested in?</h3>
-          <div class="contact-choices">
-            {% for service in service_items %}
-              {% if service.title %}
-                <button type="button" class="contact-choice" data-value="{{ service.title }}">{{ service.title }}</button>
-              {% endif %}
-            {% empty %}
-              <p class="contact-step__empty">No services available at the moment.</p>
-            {% endfor %}
-          </div>
-          {% if service_items %}
-            <button type="button" class="contact-form__submit" disabled>Continue</button>
+          {% if contact_error %}
+            <p class="contact-form__error">{{ contact_error }}</p>
           {% endif %}
-        </div>
 
-        <!-- Step 2: Timeline -->
-        <div class="contact-step" data-step="2">
-          <h3 class="contact-step__question">When do you need this done?</h3>
-          <div class="contact-choices">
-            <button type="button" class="contact-choice" data-value="ASAP">ASAP</button>
-            <button type="button" class="contact-choice" data-value="Within 1 month">Within 1 month</button>
-            <button type="button" class="contact-choice" data-value="1–3 months">1–3 months</button>
-            <button type="button" class="contact-choice" data-value="3+ months">3+ months</button>
-            <button type="button" class="contact-choice" data-value="Just exploring">Just exploring</button>
-          </div>
-        </div>
-
-                <!-- Step 3: Contact details -->
-        <div class="contact-step" data-step="3">
-          <h3 class="contact-step__question">How can we reach you?</h3>
-          <p class="contact-step__hint">Email or phone at least one is required</p>
-
-          <div class="contact-form__field">
-            <label for="contact-email">Email</label>
-            <input
-              type="email"
-              id="contact-email"
-              name="email"
-              autocomplete="email"
-              inputmode="email"
-              placeholder="you@example.com"
-            />
-            <p class="contact-form__error" data-email-error hidden></p>
+          <!-- Step 1: Services (multi-select) -->
+          <div class="contact-step is-active" data-step="1">
+            <h3 class="contact-step__question">Which services are you interested in?</h3>
+            <div class="contact-choices">
+              {% for service in service_items %}
+                {% if service.title %}
+                  <button type="button" class="contact-choice" data-value="{{ service.title }}">{{ service.title }}</button>
+                {% endif %}
+              {% empty %}
+                <p class="contact-step__empty">No services available at the moment.</p>
+              {% endfor %}
+            </div>
+            {% if service_items %}
+              <button type="button" class="contact-form__submit" disabled>Continue</button>
+            {% endif %}
           </div>
 
-          <div class="contact-form__field">
-            <label for="contact-phone">Phone Number</label>
-            <input
-              type="tel"
-              id="contact-phone"
-              name="phone"
-              autocomplete="tel"
-              inputmode="tel"
-              placeholder="+254 712 345 678"
-            />
-            <p class="contact-form__error" data-phone-error hidden></p>
+          <!-- Step 2: Timeline -->
+          <div class="contact-step" data-step="2">
+            <h3 class="contact-step__question">When do you need this done?</h3>
+            <div class="contact-choices">
+              <button type="button" class="contact-choice" data-value="ASAP">ASAP</button>
+              <button type="button" class="contact-choice" data-value="Within 1 month">Within 1 month</button>
+              <button type="button" class="contact-choice" data-value="1–3 months">1–3 months</button>
+              <button type="button" class="contact-choice" data-value="3+ months">3+ months</button>
+              <button type="button" class="contact-choice" data-value="Just exploring">Just exploring</button>
+            </div>
           </div>
 
-          <button type="submit" class="contact-form__submit">Submit</button>
-        </div>
+          <!-- Step 3: Contact details -->
+          <div class="contact-step" data-step="3">
+            <h3 class="contact-step__question">How can we reach you?</h3>
+            <p class="contact-step__hint">Email or phone — at least one is required</p>
 
-        <!-- Hidden fields filled by JS -->
-        <input type="hidden" name="service" value="" />
-        <input type="hidden" name="timeline" value="" />
-      </form>
+            <div class="contact-form__field">
+              <label for="contact-email">Email</label>
+              <input
+                type="email"
+                id="contact-email"
+                name="email"
+                autocomplete="email"
+                inputmode="email"
+                placeholder="you@example.com"
+              />
+              <p class="contact-form__error" data-email-error hidden></p>
+            </div>
+
+            <div class="contact-form__field">
+              <label for="contact-phone">Phone Number</label>
+              <input
+                type="tel"
+                id="contact-phone"
+                name="phone"
+                autocomplete="tel"
+                inputmode="tel"
+                placeholder="+254 712 345 678"
+              />
+              <p class="contact-form__error" data-phone-error hidden></p>
+            </div>
+
+            <button type="submit" class="contact-form__submit">Submit</button>
+          </div>
+
+          <input type="hidden" name="service" value="" />
+          <input type="hidden" name="timeline" value="" />
+        </form>
+      {% endif %}
 
       <p class="contact-text">{{ content.contact_text }}</p>
     </section>
@@ -86,6 +96,14 @@
   <section class="feedback-section">
     <h2 class="feedback-section__title">{{ content.feedback_title }}</h2>
     <p class="feedback-section__text">{{ content.feedback_text }}</p>
+
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message message--{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
     <form class="feedback-form" method="post" novalidate>
       {% csrf_token %}

@@ -82,7 +82,6 @@ def contact(request):
                 )
                 logger.info("Contact message saved successfully.")
 
-                # ---- Admin notification ----
                 contact_lines = [f"Service: {service}", f"Timeline: {timeline}"]
                 if email:
                     contact_lines.append(f"Email: {email}")
@@ -100,7 +99,6 @@ def contact(request):
                 except Exception as e:
                     logger.error(f"Failed to send admin contact notification: {e}")
 
-                # ---- Client auto-reply (only if they gave an email) ----
                 if email:
                     try:
                         send_mail(
@@ -119,27 +117,18 @@ def contact(request):
                             recipient_list=[email],
                             fail_silently=True,
                         )
-                        logger.info(f"Auto-reply sent to {email}.")
                     except Exception as e:
                         logger.error(f"Failed to send client auto-reply: {e}")
 
-                # ---- Tailored success message ----
                 if email:
-                    messages.success(
-                        request,
-                        "Message sent successfully. Check your inbox — we'll be in touch."
-                    )
+                    request.session['contact_success'] = "Message sent successfully. Check your inbox — we'll be in touch."
                 else:
-                    messages.success(
-                        request,
-                        "Thanks! We'll call you shortly."
-                    )
+                    request.session['contact_success'] = "Thanks! We'll call you shortly."
+
                 return redirect('contact')
             else:
-                messages.error(
-                    request,
-                    "Please complete all steps and provide a phone number or email."
-                )
+                request.session['contact_error'] = "Please complete all steps and provide a phone number or email."
+                return redirect('contact')
 
         elif 'position' in request.POST:
             position = request.POST.get('position')
@@ -188,12 +177,16 @@ def contact(request):
             else:
                 messages.error(request, "Please fill out all feedback fields.")
 
+    contact_success = request.session.pop('contact_success', None)
+    contact_error = request.session.pop('contact_error', None)
+
     context = {
         'content': ContactPageContent.objects.first(),
         'service_items': list(ServiceItem.objects.all()),
+        'contact_success': contact_success,
+        'contact_error': contact_error,
     }
     return render(request, 'contact.html', context)
-
 
 @cache_page(60 * 15)
 @require_http_methods(["GET"])
