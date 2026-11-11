@@ -2319,3 +2319,21 @@ a:focus-visible {
   cursor: not-allowed;
   letter-spacing: 0.14em;
 }
+
+/* Phone field error message */
+.contact-form__error {
+  margin: 0.4rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: #ff4255;
+}
+
+.contact-form__error[hidden] {
+  display: none;
+}
+
+/* Invalid input — pink underline */
+.contact-form__field input[aria-invalid="true"] {
+  border-bottom-color: #ff4255;
+}

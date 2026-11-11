@@ -187,6 +187,8 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
 
   const serviceInput = wizard.querySelector('input[name="service"]');
   const timelineInput = wizard.querySelector('input[name="timeline"]');
+  const phoneInput = wizard.querySelector('input[name="phone"]');
+  const phoneError = wizard.querySelector('[data-phone-error]');
   const selectedServices = new Set();
 
   function goToStep(stepNum) {
@@ -235,11 +237,68 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     });
   }
 
-  // Step 2 — single-select timeline (unchanged behaviour: click advances)
+  // Step 2 — single-select timeline
   wizard.querySelectorAll('.contact-step[data-step="2"] .contact-choice').forEach(choice => {
     choice.addEventListener('click', () => {
       timelineInput.value = choice.dataset.value;
       goToStep(3);
     });
+  });
+
+  // ===== Phone validation =====
+  function normalizePhone(raw) {
+    if (!raw) return '';
+    let digits = raw.replace(/[^\d+]/g, '');
+    if (digits.indexOf('+') > 0) {
+      digits = digits.replace(/\+/g, '');
+    }
+    return digits;
+  }
+
+  function isValidPhone(raw) {
+    const value = normalizePhone(raw);
+    if (!value) return false;
+    // 7–15 digits, optional leading +
+    return /^\+?\d{7,15}$/.test(value);
+  }
+
+  function showPhoneError(message) {
+    if (!phoneError) return;
+    phoneError.textContent = message;
+    phoneError.hidden = false;
+    if (phoneInput) phoneInput.setAttribute('aria-invalid', 'true');
+  }
+
+  function clearPhoneError() {
+    if (!phoneError) return;
+    phoneError.hidden = true;
+    phoneError.textContent = '';
+    if (phoneInput) phoneInput.removeAttribute('aria-invalid');
+  }
+
+  if (phoneInput) {
+    phoneInput.addEventListener('input', clearPhoneError);
+  }
+
+  wizard.addEventListener('submit', (e) => {
+    const raw = phoneInput ? phoneInput.value : '';
+
+    if (!raw || !raw.trim()) {
+      e.preventDefault();
+      showPhoneError('Please enter your phone number.');
+      if (phoneInput) phoneInput.focus();
+      return;
+    }
+
+    if (!isValidPhone(raw)) {
+      e.preventDefault();
+      showPhoneError('Please enter a valid phone number (7–15 digits, e.g. +254712345678).');
+      if (phoneInput) phoneInput.focus();
+      return;
+    }
+
+    // Normalize before submit so backend gets a clean value
+    if (phoneInput) phoneInput.value = normalizePhone(raw);
+    clearPhoneError();
   });
 })();

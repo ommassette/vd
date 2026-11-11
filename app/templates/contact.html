@@ -11,23 +11,22 @@
       <form class="contact-wizard" method="post" novalidate>
         {% csrf_token %}
 
-  <!-- Step 1: Services (multi-select) -->
-<div class="contact-step is-active" data-step="1">
-  <h3 class="contact-step__question">Which services are you interested in?</h3>
-  <!-- <p class="contact-step__hint">Select one or mo</p> -->
-  <div class="contact-choices">
-    {% for service in service_items %}
-      {% if service.title %}
-        <button type="button" class="contact-choice" data-value="{{ service.title }}">{{ service.title }}</button>
-      {% endif %}
-    {% empty %}
-      <p class="contact-step__empty">No services available at the moment.</p>
-    {% endfor %}
-  </div>
-  {% if service_items %}
-    <button type="button" class="contact-form__submit" disabled>Continue</button>
-  {% endif %}
-</div>
+        <!-- Step 1: Services (multi-select) -->
+        <div class="contact-step is-active" data-step="1">
+          <h3 class="contact-step__question">Which services are you interested in?</h3>
+          <div class="contact-choices">
+            {% for service in service_items %}
+              {% if service.title %}
+                <button type="button" class="contact-choice" data-value="{{ service.title }}">{{ service.title }}</button>
+              {% endif %}
+            {% empty %}
+              <p class="contact-step__empty">No services available at the moment.</p>
+            {% endfor %}
+          </div>
+          {% if service_items %}
+            <button type="button" class="contact-form__submit" disabled>Continue</button>
+          {% endif %}
+        </div>
 
         <!-- Step 2: Timeline -->
         <div class="contact-step" data-step="2">
@@ -46,12 +45,21 @@
           <h3 class="contact-step__question">Leave your phone number and we'll get back to you</h3>
           <div class="contact-form__field">
             <label for="contact-phone">Phone Number</label>
-            <input type="tel" id="contact-phone" name="phone" required autocomplete="tel" />
+            <input
+              type="tel"
+              id="contact-phone"
+              name="phone"
+              required
+              autocomplete="tel"
+              inputmode="tel"
+              placeholder="+254 712 345 678"
+            />
+            <p class="contact-form__error" data-phone-error hidden></p>
           </div>
           <button type="submit" class="contact-form__submit">Submit</button>
         </div>
 
-        <!-- Hidden fields filled by JS as the client picks choices -->
+        <!-- Hidden fields filled by JS -->
         <input type="hidden" name="service" value="" />
         <input type="hidden" name="timeline" value="" />
       </form>
