@@ -5,6 +5,8 @@ from django_otp.admin import OTPAdminSite
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from .models import (
+    Article,             # ← add
+    ArticlePageContent,
     ContactMessage,
     ContactPageContent,
     FeedbackMessage,
@@ -104,3 +106,34 @@ class ContactMessageAdmin(admin.ModelAdmin):
 class FeedbackMessageAdmin(admin.ModelAdmin):
     list_display = ('position', 'email', 'created_at')
     readonly_fields = ('position', 'email', 'feedback', 'created_at')
+
+@admin.register(Article, site=admin_site)
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'published_at', 'is_published', 'order')
+    list_editable = ('is_published', 'order')
+    prepopulated_fields = {'slug': ('title',)}
+    fieldsets = (
+        ('Article Meta', {
+            'fields': ('title', 'slug', 'author', 'published_at', 'is_published', 'order')
+        }),
+        ('Hero Image', {
+            'fields': ('hero_image',)
+        }),
+        ('Content — Block 1', {
+            'fields': ('intro_paragraph', 'paragraph_2', 'subheading_1', 'paragraph_3', 'paragraph_4'),
+            'description': (
+                'Fill only what the article needs. The intro paragraph gets the drop cap. '
+                'Any field left blank is simply skipped in the layout.'
+            )
+        }),
+        ('Mid Article Image', {
+            'fields': ('mid_image', 'mid_image_caption')
+        }),
+        ('Content — Block 2', {
+            'fields': ('subheading_2', 'paragraph_5', 'paragraph_6', 'paragraph_7')
+        }),
+    )
+    
+@admin.register(ArticlePageContent, site=admin_site)
+class ArticlePageContentAdmin(admin.ModelAdmin):
+    pass

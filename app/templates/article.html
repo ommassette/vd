@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ article.title }} — Valgus Designs{% endblock %}
+
+{% block content %}
+  <article class="article">
+
+    <div class="article__hero">
+      {% if article.hero_image %}
+        <img src="{{ article.hero_image.url }}" alt="{{ article.title }}" />
+      {% endif %}
+    </div>
+
+    <header class="article__header">
+      <h1 class="article__title">{{ article.title }}</h1>
+      <div class="article__meta">
+        {% if article.author %}
+          <span class="article__author">By {{ article.author }}</span>
+          <span class="article__dot" aria-hidden="true">·</span>
+        {% endif %}
+        <time class="article__date" datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"d M Y" }}</time>
+      </div>
+    </header>
+
+    <div class="article__body">
+      {% if article.intro_paragraph %}
+        <p class="article__intro">{{ article.intro_paragraph }}</p>
+      {% endif %}
+
+      {% if article.paragraph_2 %}
+        <p>{{ article.paragraph_2 }}</p>
+      {% endif %}
+
+      {% if article.subheading_1 %}
+        <h2>{{ article.subheading_1 }}</h2>
+      {% endif %}
+
+      {% if article.paragraph_3 %}
+        <p>{{ article.paragraph_3 }}</p>
+      {% endif %}
+
+      {% if article.paragraph_4 %}
+        <p>{{ article.paragraph_4 }}</p>
+      {% endif %}
+
+      {% if article.mid_image %}
+        <figure class="article__figure">
+          <img src="{{ article.mid_image.url }}" alt="{{ article.mid_image_caption|default:article.title }}" />
+          {% if article.mid_image_caption %}
+            <figcaption class="article__caption">{{ article.mid_image_caption }}</figcaption>
+          {% endif %}
+        </figure>
+      {% endif %}
+
+      {% if article.subheading_2 %}
+        <h2>{{ article.subheading_2 }}</h2>
+      {% endif %}
+
+      {% if article.paragraph_5 %}
+        <p>{{ article.paragraph_5 }}</p>
+      {% endif %}
+
+      {% if article.paragraph_6 %}
+        <p>{{ article.paragraph_6 }}</p>
+      {% endif %}
+
+      {% if article.paragraph_7 %}
+        <p>{{ article.paragraph_7 }}</p>
+      {% endif %}
+    </div>
+
+  </article>
+{% endblock %}

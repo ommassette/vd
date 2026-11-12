@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ content.title|default:"Articles" }} — Valgus Designs{% endblock %}
+
+{% block content %}
+  <main class="articles-index">
+
+    <header class="articles-index__header">
+      <h1 class="articles-index__title">{{ content.title|default:"Articles" }}</h1>
+      {% if content.intro_text %}
+        <p class="articles-index__intro">{{ content.intro_text }}</p>
+      {% endif %}
+    </header>
+
+    {% if articles %}
+      <div class="articles-index__grid">
+        {% for article in articles %}
+          <a href="{% url 'article_detail' article.slug %}" class="article-card">
+            <div class="article-card__media">
+              {% if article.hero_image %}
+                <img src="{{ article.hero_image.url }}" alt="{{ article.title }}" />
+              {% endif %}
+            </div>
+            <div class="article-card__body">
+              <time class="article-card__date" datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"d M Y" }}</time>
+              <h2 class="article-card__title">{{ article.title }}</h2>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="articles-index__empty">No articles published yet.</p>
+    {% endif %}
+
+  </main>
+{% endblock %}

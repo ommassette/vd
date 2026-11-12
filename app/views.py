@@ -9,6 +9,8 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
 
 from .models import (
+    Article,          # ← add
+    ArticlePageContent,
     ContactMessage,
     ContactPageContent,
     FeedbackMessage,
@@ -212,3 +214,20 @@ Host: https://valgusdesigns.com
 Sitemap: https://valgusdesigns.com/sitemap.xml
 """
     return HttpResponse(content.strip(), content_type="text/plain")
+
+@cache_page(60 * 15)
+@require_http_methods(["GET"])
+def articles(request):
+    context = {
+        'content': ArticlePageContent.objects.first(),
+        'articles': list(Article.objects.filter(is_published=True)),
+    }
+    return render(request, 'articles.html', context)
+
+
+@cache_page(60 * 15)
+@require_http_methods(["GET"])
+def article_detail(request, slug):
+    article = get_object_or_404(Article, slug=slug, is_published=True)
+    context = {'article': article}
+    return render(request, 'article.html', context)

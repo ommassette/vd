@@ -2,6 +2,7 @@
 import logging
 from django.db import models
 from cloudinary.models import CloudinaryField
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -250,3 +251,66 @@ class FeedbackMessage(models.Model):
 
     def __str__(self):
         return f"Feedback ({self.position or 'General'}) - {self.email or 'No Email'}"
+
+class Article(models.Model):
+    # Meta
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True, help_text="Auto-fills from title — edit if needed for SEO")
+    author = models.CharField(max_length=100, blank=True, null=True, default="Valgus Creative")
+    published_at = models.DateTimeField(default=timezone.now)
+    is_published = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(blank=True, null=True, default=0)
+
+    # Hero
+    hero_image = CloudinaryField(
+        'image',
+        blank=True, null=True,
+        transformation={'fetch_format': 'auto', 'quality': 'auto'}
+    )
+
+    # Content block 1
+    intro_paragraph = models.TextField(
+        blank=True, null=True,
+        help_text="Opening paragraph — gets the big magazine-style drop cap."
+    )
+    paragraph_2 = models.TextField(blank=True, null=True)
+    subheading_1 = models.CharField(max_length=255, blank=True, null=True)
+    paragraph_3 = models.TextField(blank=True, null=True)
+    paragraph_4 = models.TextField(blank=True, null=True)
+
+    # Mid image
+    mid_image = CloudinaryField(
+        'image',
+        blank=True, null=True,
+        transformation={'fetch_format': 'auto', 'quality': 'auto'}
+    )
+    mid_image_caption = models.CharField(max_length=255, blank=True, null=True)
+
+    # Content block 2
+    subheading_2 = models.CharField(max_length=255, blank=True, null=True)
+    paragraph_5 = models.TextField(blank=True, null=True)
+    paragraph_6 = models.TextField(blank=True, null=True)
+    paragraph_7 = models.TextField(
+        blank=True, null=True,
+        help_text="Closing paragraph. Leave blank if the article ends earlier."
+    )
+
+    class Meta:
+        ordering = ['order', '-published_at']
+
+    def __str__(self):
+        return self.title or "Untitled Article"
+
+class ArticlePageContent(models.Model):
+    title = models.CharField(max_length=255, blank=True, null=True, default="Articles")
+    intro_text = models.TextField(
+        blank=True, null=True,
+        default="Notes on branding, design, and building businesses that look the part."
+    )
+
+    class Meta:
+        verbose_name = "Article Page Content"
+        verbose_name_plural = "Article Page Content"
+
+    def __str__(self):
+        return "Article Page Configuration"
