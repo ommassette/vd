@@ -85,7 +85,7 @@ body {
   white-space: nowrap;
   opacity: 0;
   transform: translate(-50%, -50%);
-  animation: fadeLoop 9s ease-in-out infinite;
+  animation: fadeLoop 6s ease-in-out infinite;   /* was 9s */
   text-shadow:
     0.35px 0 0 currentColor,
     -0.35px 0 0 currentColor;
@@ -95,14 +95,14 @@ body {
 .word--web,
 .word--design { color: var(--ink); }
 .word--content { animation-delay: 0s; }
-.word--web { animation-delay: 3s; }
-.word--design { animation-delay: 6s; }
+.word--web { animation-delay: 2s; }              /* was 3s */
+.word--design { animation-delay: 4s; }
 
 @keyframes fadeLoop {
   0% { opacity: 0; }
-  3% { opacity: 1; }
+  4% { opacity: 1; }                              /* fade in ~0.24s (was 0.27s) */
   30% { opacity: 1; }
-  33% { opacity: 0; }
+  34% { opacity: 0; }                             /* fade out ~0.24s */
   100% { opacity: 0; }
 }
 
