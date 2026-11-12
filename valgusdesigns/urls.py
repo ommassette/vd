@@ -1,11 +1,12 @@
 # valgusdesigns/urls.py
 from app.admin import admin_site
-from app.sitemaps import StaticViewSitemap
+from app.sitemaps import StaticViewSitemap, ArticleSitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 
 sitemaps = {
     "static": StaticViewSitemap,
+    "articles": ArticleSitemap,
 }
 
 urlpatterns = [
