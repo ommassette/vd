@@ -106,6 +106,24 @@
   </script>
 </head>
 <body>
+  <!-- Holiday decorative layer -->
+  <div class="holiday-decor" aria-hidden="true">
+
+    <!-- Top-right: flowing ribbon curves -->
+    <svg class="holiday-decor__svg holiday-decor__svg--tr" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 0 400 C 80 340 160 280 200 200 S 300 80 400 0" stroke="#ff4255" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 60 400 C 120 340 180 280 220 200 S 320 80 400 40" stroke="#e6b54a" stroke-width="0.9" stroke-linecap="round" opacity="0.8"/>
+      <path d="M 140 400 C 180 340 220 280 240 200 S 340 80 400 80" stroke="#ff4255" stroke-width="0.7" stroke-linecap="round" opacity="0.7"/>
+    </svg>
+
+    <!-- Bottom-left: mirrored ribbon curves -->
+    <svg class="holiday-decor__svg holiday-decor__svg--bl" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 0 0 C 80 60 160 120 200 200 S 300 320 400 400" stroke="#ff4255" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 60 0 C 120 60 180 120 220 200 S 320 320 400 360" stroke="#e6b54a" stroke-width="0.9" stroke-linecap="round" opacity="0.8"/>
+      <path d="M 140 0 C 180 60 220 120 240 200 S 340 320 400 320" stroke="#ff4255" stroke-width="0.7" stroke-linecap="round" opacity="0.7"/>
+    </svg>
+
+  </div>
 
   <nav class="nav">
     <a href="{% url 'services' %}">SERVICES</a>
