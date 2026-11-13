@@ -278,6 +278,16 @@ class Article(models.Model):
     paragraph_3 = models.TextField(blank=True, null=True)
     paragraph_4 = models.TextField(blank=True, null=True)
 
+        # Pull quote (optional)
+    quote_text = models.TextField(
+        blank=True, null=True,
+        help_text="Optional pull quote shown between the two content blocks."
+    )
+    quote_author = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text="Optional attribution for the quote."
+    )
+
     # Mid image
     mid_image = CloudinaryField(
         'image',

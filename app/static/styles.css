@@ -2647,3 +2647,50 @@ a:focus-visible {
   .article-card__media img,
   .article-card__title { transition: none; }
 }
+/* Pull quote */
+.article__quote {
+  margin: clamp(3.5rem, 7vw, 5rem) 0;
+  padding: clamp(2rem, 4vw, 3rem) 0;
+  border-top: 1px solid rgba(34, 34, 34, 0.15);
+  border-bottom: 1px solid rgba(34, 34, 34, 0.15);
+  text-align: center;
+}
+
+.article__body .article__quote-text {
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 200;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 auto 1.5rem;
+  max-width: 22ch;
+}
+
+.article__body .article__quote-text::before {
+  content: '“';
+  display: block;
+  font-size: 2.5em;
+  line-height: 0.4;
+  font-weight: 200;
+  color: var(--ink);
+  opacity: 0.12;
+  margin-bottom: 0.5em;
+}
+
+.article__quote-author {
+  display: block;
+  font-size: clamp(0.78rem, 1vw, 0.9rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+  opacity: 0.6;
+  margin: 0;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .article__body .article__quote-text {
+    font-size: clamp(1.5rem, 7vw, 2.2rem);
+  }
+}

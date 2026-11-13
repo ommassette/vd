@@ -126,6 +126,13 @@ class ArticleAdmin(admin.ModelAdmin):
                 'Any field left blank is simply skipped in the layout.'
             )
         }),
+        ('Pull Quote (Optional)', {
+            'fields': ('quote_text', 'quote_author'),
+            'description': (
+                'Large centered quote that breaks up the article. '
+                'Leave blank to skip — nothing renders if both fields are empty.'
+            )
+        }),
         ('Mid Article Image', {
             'fields': ('mid_image', 'mid_image_caption')
         }),

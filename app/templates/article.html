@@ -44,6 +44,15 @@
         <p>{{ article.paragraph_4 }}</p>
       {% endif %}
 
+      {% if article.quote_text %}
+        <blockquote class="article__quote">
+          <p class="article__quote-text">{{ article.quote_text }}</p>
+          {% if article.quote_author %}
+            <footer class="article__quote-author">{{ article.quote_author }}</footer>
+          {% endif %}
+        </blockquote>
+      {% endif %}
+
       {% if article.mid_image %}
         <figure class="article__figure">
           <img src="{{ article.mid_image.url }}" alt="{{ article.mid_image_caption|default:article.title }}" />
