@@ -19,6 +19,12 @@
         {% endfor %}
       </div>
       <p class="project__desc">{{ project.description }}</p>
+
+      {% if project.case_study %}
+        <a href="{% url 'case_study_detail' project.id %}" class="project__case-study">
+          View Case Study →
+        </a>
+      {% endif %}
     </section>
   {% endfor %}
 

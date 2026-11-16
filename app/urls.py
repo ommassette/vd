@@ -5,11 +5,11 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('services/', views.services, name='services'),
     path('portfolio/', views.portfolio, name='portfolio'),
+    path('portfolio/<int:project_id>/case-study/', views.case_study_detail, name='case_study_detail'),
     path('contact/', views.contact, name='contact'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('terms/', views.terms, name='terms'),
     path('robots.txt', views.robots_txt, name='robots_txt'),
     path('articles/', views.articles, name='articles'),
     path('articles/<slug:slug>/', views.article_detail, name='article_detail'),
-    
 ]

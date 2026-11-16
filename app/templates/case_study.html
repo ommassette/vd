@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ case_study.project.title }} — Case Study — Valgus Designs{% endblock %}
+
+{% block extra_head %}
+  {# Load any Google Fonts declared on the typefaces #}
+  {% for typeface in case_study.typefaces.all %}
+    {% if typeface.google_fonts_url %}
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link rel="stylesheet" href="{{ typeface.google_fonts_url }}">
+    {% endif %}
+  {% endfor %}
+
+  <style>
+    /* The site nav is normally absolutely positioned over the hero.
+       On the case study page the hero is a white two-column layout,
+       so we put the nav back into normal flow here. */
+    body > .nav {
+      position: relative;
+      padding: 1.5rem 1.25rem;
+      background: #fff;
+    }
+    @media (max-width: 800px) {
+      body > .nav { padding: 1.25rem 1rem; }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+<article class="cs-page">
+
+  {# ===== HERO ===== #}
+  <section class="cs-hero">
+    <div class="cs-hero__text reveal">
+      <p class="cs-meta__kicker">{{ case_study.kicker|default:"Case Study" }}</p>
+      <h1 class="cs-meta__title">{{ case_study.project.title }}</h1>
+
+      {% if case_study.scope_tags.all %}
+        <ul class="cs-meta__tags">
+          {% for tag in case_study.scope_tags.all %}
+            <li>{{ tag.name }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <div class="cs-hero__image">
+      {% if case_study.hero_image %}
+        <img src="{{ case_study.hero_image.url }}" alt="{{ case_study.project.title }}" />
+      {% endif %}
+    </div>
+
+    <div class="cs-hero__facts reveal">
+      {% if case_study.client_name %}
+        <div>
+          <span class="cs-fact__label">Client</span>
+          <span class="cs-fact__value">
+            {{ case_study.client_name }}{% if case_study.client_location %} · {{ case_study.client_location }}{% endif %}
+          </span>
+        </div>
+      {% endif %}
+      {% if case_study.year %}
+        <div>
+          <span class="cs-fact__label">Year</span>
+          <span class="cs-fact__value">{{ case_study.year }}</span>
+        </div>
+      {% endif %}
+      {% if case_study.scope_summary %}
+        <div>
+          <span class="cs-fact__label">Scope</span>
+          <span class="cs-fact__value">{{ case_study.scope_summary }}</span>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  {# ===== 01 — BRIEF & VISION ===== #}
+  {% if case_study.brief_heading or case_study.brief_body %}
+  <section class="cs-section reveal">
+    <div class="cs-section__label">
+      <span class="cs-section__num"></span>
+      <span class="cs-section__name">The Brief &amp; Vision</span>
+    </div>
+    {% if case_study.brief_heading %}
+      <h2 class="cs-section__heading">{{ case_study.brief_heading }}</h2>
+    {% endif %}
+    {% if case_study.brief_body %}
+      <div class="cs-section__body">{{ case_study.brief_body|linebreaks }}</div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {# ===== 02 — CREATIVE DIRECTION ===== #}
+  {% if case_study.direction_heading or case_study.direction_body %}
+  <section class="cs-section reveal">
+    <div class="cs-section__label">
+      <span class="cs-section__num"></span>
+      <span class="cs-section__name">The Creative Direction</span>
+    </div>
+    {% if case_study.direction_heading %}
+      <h2 class="cs-section__heading">{{ case_study.direction_heading }}</h2>
+    {% endif %}
+    {% if case_study.direction_body %}
+      <div class="cs-section__body">{{ case_study.direction_body|linebreaks }}</div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {# ===== 03 — CRAFT & EXECUTION ===== #}
+  {% if case_study.craft_heading or case_study.craft_body %}
+  <section class="cs-section reveal">
+    <div class="cs-section__label">
+      <span class="cs-section__num"></span>
+      <span class="cs-section__name">The Craft &amp; Execution</span>
+    </div>
+    {% if case_study.craft_heading %}
+      <h2 class="cs-section__heading">{{ case_study.craft_heading }}</h2>
+    {% endif %}
+    {% if case_study.craft_body %}
+      <div class="cs-section__body">{{ case_study.craft_body|linebreaks }}</div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {# ===== 04 — TRANSFORMATION (BEFORE & AFTER) ===== #}
+  {% if case_study.show_transformation %}
+  <section class="cs-section reveal">
+    <div class="cs-section__label">
+      <span class="cs-section__num"></span>
+      <span class="cs-section__name">The Transformation · Before &amp; After</span>
+    </div>
+    {% if case_study.transformation_heading %}
+      <h2 class="cs-section__heading">{{ case_study.transformation_heading }}</h2>
+    {% endif %}
+
+    <div class="cs-beforeafter">
+      {% if case_study.transformation_before_image %}
+        <div class="cs-beforeafter__item">
+          <span class="cs-beforeafter__label">{{ case_study.transformation_before_label|default:"Before" }}</span>
+          <div class="cs-beforeafter__media">
+            <img src="{{ case_study.transformation_before_image.url }}" alt="Before" />
+          </div>
+        </div>
+      {% endif %}
+      {% if case_study.transformation_after_image %}
+        <div class="cs-beforeafter__item">
+          <span class="cs-beforeafter__label cs-beforeafter__label--after">{{ case_study.transformation_after_label|default:"After" }}</span>
+          <div class="cs-beforeafter__media">
+            <img src="{{ case_study.transformation_after_image.url }}" alt="After" />
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# ===== 05 — DESIGN SYSTEM ===== #}
+  {% if case_study.show_design_system %}
+  <section class="cs-section reveal">
+    <div class="cs-section__label">
+      <span class="cs-section__num"></span>
+      <span class="cs-section__name">Visual &amp; Interactive Proof · The Design System</span>
+    </div>
+    {% if case_study.design_system_heading %}
+      <h2 class="cs-section__heading">{{ case_study.design_system_heading }}</h2>
+    {% endif %}
+
+    {# Colour palette #}
+    {% if case_study.color_swatches.all %}
+      <div class="cs-palette">
+        {% for swatch in case_study.color_swatches.all %}
+          <div class="cs-swatch">
+            <div class="cs-swatch__chip" style="background: {{ swatch.hex_code }};"></div>
+            <span class="cs-swatch__name">{{ swatch.name }}</span>
+            <span class="cs-swatch__hex">{{ swatch.hex_code|upper }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# Typeface specimens #}
+    {% if case_study.typefaces.all %}
+      <div class="cs-type">
+        {% for typeface in case_study.typefaces.all %}
+          <div class="cs-type__item" style="font-family: {{ typeface.font_family }};">
+            <p class="cs-type__label">{{ typeface.label }}</p>
+            <p class="cs-type__name">{{ typeface.display_name }}</p>
+            <p class="cs-type__aa">Aa</p>
+            <p class="cs-type__specimen">The quick brown fox jumps over the lazy dog.</p>
+            <p class="cs-type__alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# UI components #}
+    {% if case_study.ui_components.all %}
+      <div class="cs-components">
+        {% for component in case_study.ui_components.all %}
+          <div class="cs-component">
+            <span class="cs-component__label">{{ component.label }}</span>
+            <div class="cs-component__stage">
+              {% if component.component_type == 'primary_btn' %}
+                <button class="cs-btn" type="button">{{ component.content }}</button>
+              {% elif component.component_type == 'ghost_btn' %}
+                <button class="cs-btn cs-btn--ghost" type="button">{{ component.content }}</button>
+              {% elif component.component_type == 'input' %}
+                <input class="cs-input" type="text" placeholder="{{ component.content }}" readonly />
+              {% elif component.component_type == 'tag' %}
+                <span class="cs-tag">{{ component.content }}</span>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {# ===== 06 — VIDEO ===== #}
+  {% if case_study.show_video and case_study.video_file %}
+  <section class="cs-video reveal">
+    <div class="cs-video__label">
+      <span class="cs-video__label-num"></span>
+      <span class="cs-video__label-name">{{ case_study.video_label|default:"The Walkthrough" }}</span>
+    </div>
+    <div class="cs-video__stage">
+      <video
+        class="cs-video__el"
+        controls
+        preload="metadata"
+        playsinline
+        {% if case_study.video_poster %}poster="{{ case_study.video_poster.url }}"{% endif %}
+      >
+        <source src="{{ case_study.video_file.url }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </section>
+  {% endif %}
+
+  {# ===== CTA ===== #}
+  <section class="cs-cta">
+    <div class="cs-cta__inner reveal">
+      <h2 class="cs-cta__heading">{{ case_study.cta_heading|default:"Have a project like this in mind?" }}</h2>
+      <p class="cs-cta__text">{{ case_study.cta_text|default:"Tell us what you're building, what's getting in the way, and what you'd like it to feel like when it's done. We'll take it from there." }}</p>
+      <a href="{% url 'contact' %}" class="cs-cta__button">{{ case_study.cta_button_label|default:"Start a Conversation" }} →</a>
+    </div>
+  </section>
+
+</article>
+
+{% endblock %}

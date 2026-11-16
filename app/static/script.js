@@ -26,7 +26,12 @@ const revealSelectors = [
   '.error-message',
   '.error-link',
   '.privacy-header',
-  '.privacy-body'
+  '.privacy-body',
+  '.cs-hero__text',
+  '.cs-hero__facts',
+  '.cs-section',
+  '.cs-video',
+  '.cs-cta__inner'
 ].join(',');
 
 const revealEls = document.querySelectorAll(revealSelectors);

@@ -324,3 +324,221 @@ class ArticlePageContent(models.Model):
 
     def __str__(self):
         return "Article Page Configuration"
+
+# =============================================================================
+# CASE STUDY MODELS
+# =============================================================================
+
+class CaseStudy(models.Model):
+    project = models.OneToOneField(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='case_study',
+        help_text="The portfolio project this case study belongs to."
+    )
+
+    # Hero / meta block
+    kicker = models.CharField(
+        max_length=100, blank=True, null=True, default="Case Study"
+    )
+    client_name = models.CharField(max_length=255, blank=True, null=True)
+    client_location = models.CharField(max_length=255, blank=True, null=True)
+    year = models.CharField(max_length=50, blank=True, null=True)
+    scope_summary = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text="e.g. 'Rebrand + full website build'"
+    )
+    hero_image = CloudinaryField(
+        'image', blank=True, null=True,
+        transformation={'fetch_format': 'auto', 'quality': 'auto'}
+    )
+
+    # 01 — Brief & Vision
+    brief_heading = models.CharField(max_length=500, blank=True, null=True)
+    brief_body = models.TextField(
+        blank=True, null=True,
+        help_text="Separate paragraphs with a blank line."
+    )
+
+    # 02 — Creative Direction
+    direction_heading = models.CharField(max_length=500, blank=True, null=True)
+    direction_body = models.TextField(
+        blank=True, null=True,
+        help_text="Separate paragraphs with a blank line."
+    )
+
+    # 03 — Craft & Execution
+    craft_heading = models.CharField(max_length=500, blank=True, null=True)
+    craft_body = models.TextField(
+        blank=True, null=True,
+        help_text="Separate paragraphs with a blank line."
+    )
+
+    # 04 — Transformation (Before & After) — OPTIONAL
+    show_transformation = models.BooleanField(
+        default=False,
+        help_text="Show this section only if there was a rebrand/redesign before the work."
+    )
+    transformation_heading = models.CharField(max_length=500, blank=True, null=True)
+    transformation_before_image = CloudinaryField(
+        'image', blank=True, null=True,
+        transformation={'fetch_format': 'auto', 'quality': 'auto'}
+    )
+    transformation_after_image = CloudinaryField(
+        'image', blank=True, null=True,
+        transformation={'fetch_format': 'auto', 'quality': 'auto'}
+    )
+    transformation_before_label = models.CharField(
+        max_length=50, blank=True, null=True, default="Before"
+    )
+    transformation_after_label = models.CharField(
+        max_length=50, blank=True, null=True, default="After"
+    )
+
+    # 05 — Design System (Visual & Interactive Proof) — OPTIONAL
+    show_design_system = models.BooleanField(
+        default=False,
+        help_text="Show this section for projects built from scratch. Works with the ScopeTag/ColorSwatch/Typeface/UIComponent inline models below."
+    )
+    design_system_heading = models.CharField(max_length=500, blank=True, null=True)
+
+       # 06 — Video walkthrough — OPTIONAL
+    show_video = models.BooleanField(default=False)
+    video_label = models.CharField(
+        max_length=100, blank=True, null=True, default="The Walkthrough"
+    )
+    video_file = CloudinaryField(
+        'video',
+        resource_type='video',
+        blank=True, null=True,
+        help_text=(
+            "Upload an MP4 or WebM file. Cloudinary handles transcoding, "
+            "adaptive streaming, and CDN delivery automatically."
+        ),
+    )
+    video_poster = CloudinaryField(
+        'image', blank=True, null=True,
+        transformation={'fetch_format': 'auto', 'quality': 'auto'},
+        help_text="Thumbnail shown before the video plays. Recommended: 1600×900 or similar 16:9."
+    )
+
+    # CTA — has defaults, can be overridden per case study
+    cta_heading = models.CharField(
+        max_length=255, blank=True, null=True,
+        default="Have a project like this in mind?"
+    )
+    cta_text = models.TextField(
+        blank=True, null=True,
+        default="Tell us what you're building, what's getting in the way, and what you'd like it to feel like when it's done. We'll take it from there."
+    )
+    cta_button_label = models.CharField(
+        max_length=100, blank=True, null=True,
+        default="Start a Conversation"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Case Study"
+        verbose_name_plural = "Case Studies"
+
+    def __str__(self):
+        title = self.project.title if self.project else "Unlinked"
+        return f"Case Study — {title}"
+
+
+class ScopeTag(models.Model):
+    case_study = models.ForeignKey(
+        CaseStudy, on_delete=models.CASCADE, related_name='scope_tags'
+    )
+    name = models.CharField(max_length=100)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
+class ColorSwatch(models.Model):
+    case_study = models.ForeignKey(
+        CaseStudy, on_delete=models.CASCADE, related_name='color_swatches'
+    )
+    name = models.CharField(
+        max_length=100,
+        help_text="e.g. Ink, Bone, Ochre"
+    )
+    hex_code = models.CharField(
+        max_length=7,
+        help_text="e.g. #1C1C1C — must include the # symbol"
+    )
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.name} ({self.hex_code})"
+
+
+class Typeface(models.Model):
+    case_study = models.ForeignKey(
+        CaseStudy, on_delete=models.CASCADE, related_name='typefaces'
+    )
+    label = models.CharField(
+        max_length=100,
+        help_text="e.g. 'Heading Typeface' or 'Body Typeface'"
+    )
+    display_name = models.CharField(
+        max_length=255,
+        help_text="e.g. 'Cormorant Garamond · 300–500'"
+    )
+    font_family = models.CharField(
+        max_length=255,
+        help_text="CSS font-family value — e.g. 'Cormorant Garamond', serif"
+    )
+    google_fonts_url = models.URLField(
+        max_length=500, blank=True, null=True,
+        help_text="Optional. Google Fonts CSS URL. "
+                  "Find it at fonts.google.com → pick the font → copy the <link> href. "
+                  "If left blank, the font must already be loaded elsewhere on the site."
+    )
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.label}: {self.display_name}"
+
+
+class UIComponent(models.Model):
+    TYPE_CHOICES = [
+        ('primary_btn', 'Primary CTA (dark button)'),
+        ('ghost_btn',   'Secondary CTA (outline button)'),
+        ('input',       'Text Input (bottom line)'),
+        ('tag',         'Tag / Badge'),
+    ]
+
+    case_study = models.ForeignKey(
+        CaseStudy, on_delete=models.CASCADE, related_name='ui_components'
+    )
+    component_type = models.CharField(
+        max_length=20, choices=TYPE_CHOICES, default='primary_btn'
+    )
+    label = models.CharField(
+        max_length=100,
+        help_text="Label above the component — e.g. 'Primary CTA'"
+    )
+    content = models.CharField(
+        max_length=255,
+        help_text="Button text, input placeholder, or tag text."
+    )
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.label}: {self.content}"

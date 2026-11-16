@@ -9,8 +9,9 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
 
 from .models import (
-    Article,          # ← add
+    Article,
     ArticlePageContent,
+    CaseStudy,
     ContactMessage,
     ContactPageContent,
     FeedbackMessage,
@@ -52,7 +53,15 @@ def services(request):
 @cache_page(60 * 15)
 @require_http_methods(["GET"])
 def portfolio(request):
-    projects = list(Project.objects.prefetch_related('images').all())
+    # select_related('case_study') — LEFT JOIN so projects without a case study
+    # still appear in the list, and no N+1 queries when the template checks
+    # {% if project.case_study %} per project.
+    projects = list(
+        Project.objects
+        .select_related('case_study')
+        .prefetch_related('images')
+        .all()
+    )
 
     for project in projects:
         for img in project.images.all():
@@ -231,3 +240,20 @@ def article_detail(request, slug):
     article = get_object_or_404(Article, slug=slug, is_published=True)
     context = {'article': article}
     return render(request, 'article.html', context)
+
+@cache_page(60 * 15)
+@require_http_methods(["GET"])
+def case_study_detail(request, project_id):
+    case_study = get_object_or_404(
+        CaseStudy.objects
+        .select_related('project')
+        .prefetch_related(
+            'scope_tags',
+            'color_swatches',
+            'typefaces',
+            'ui_components',
+        ),
+        project_id=project_id,
+    )
+
+    return render(request, 'case_study.html', {'case_study': case_study})
