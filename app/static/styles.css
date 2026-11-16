@@ -3121,6 +3121,7 @@ a:focus-visible {
 .project__case-study {
   display: inline-block;
   margin-top: 1.25rem;
+  margin-left: clamp(1rem, 3vw, 2.5rem);
   font-size: 0.78rem;
   font-weight: 400;
   letter-spacing: 0.14em;
