@@ -257,3 +257,25 @@ def case_study_detail(request, project_id):
     )
 
     return render(request, 'case_study.html', {'case_study': case_study})
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from app.rag_engine import generate_chatbot_response
+
+@require_POST
+def chatbot_query_view(request):
+    try:
+        if request.content_type == "application/json":
+            data = json.loads(request.body)
+            question = data.get("message", "").strip()
+        else:
+            question = request.POST.get("message", "").strip()
+
+        if not question:
+            return JsonResponse({"error": "Empty message"}, status=400)
+        
+        answer_text = generate_chatbot_response(question)
+        return JsonResponse({"response": answer_text})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

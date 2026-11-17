@@ -542,3 +542,30 @@ class UIComponent(models.Model):
 
     def __str__(self):
         return f"{self.label}: {self.content}"
+
+from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+from .rag_engine import process_and_ingest_document, delete_document_from_vector_db
+
+
+class ServiceDocument(models.Model):
+    title = models.CharField(max_length=255)
+    file = models.FileField(upload_to='service_documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new and self.file:
+            # Trigger Hybrid RAG Ingestion on upload
+            process_and_ingest_document(self.file.path)
+
+
+@receiver(post_delete, sender=ServiceDocument)
+def auto_delete_rag_vector(sender, instance, **kwargs):
+    if instance.file:
+        delete_document_from_vector_db(instance.file.path)

@@ -35,7 +35,7 @@
               <td>{{ service.premium_price }}</td>
             </tr>
           </table>
-          <button class="service-card__toggle" aria-expanded="false">
+          <button type="button" class="service-card__toggle" aria-expanded="false">
             Description
             <span class="service-card__arrow" aria-hidden="true"></span>
           </button>
@@ -74,6 +74,33 @@
 
   <a href="{% url 'contact' %}" class="floating-cta">REACH OUT</a>
 
+  <!-- Floating Bottom-Right Saimon AI Chat Widget -->
+  <div class="saimon-widget">
+    <div onclick="toggleSaimonChat()" class="saimon-trigger-wrap" title="Ask Saimon">
+      <img src="{% static 'logo.png' %}" alt="Saimon AI" class="saimon-logo-img">
+    </div>
+
+    <div id="saimon-drawer" class="saimon-drawer hidden">
+      <div class="saimon-header">
+        <span>Saimon // Services Assistant</span>
+        <button type="button" onclick="toggleSaimonChat()" class="saimon-close">&times;</button>
+      </div>
+
+      <div id="saimon-messages" class="saimon-messages">
+        <div class="saimon-msg saimon-msg--bot">
+          Initialized. Inquire regarding our service tiers or technical specifications.
+        </div>
+      </div>
+
+      <!-- Completely stripped form tag to prevent browser/script reloads -->
+      <div id="saimon-input-box" class="saimon-form">
+        {% csrf_token %}
+        <input type="text" id="saimon-input" placeholder="Type query..." class="saimon-input" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); event.stopPropagation(); sendSaimonMessage(); }">
+        <button type="button" onclick="event.preventDefault(); event.stopPropagation(); sendSaimonMessage();" class="saimon-submit">Send</button>
+      </div>
+    </div>
+  </div>
+
   <style>
     .floating-cta {
       position: fixed;
@@ -94,4 +121,65 @@
       background-color: #333333;
     }
   </style>
+
+  <script>
+  function toggleSaimonChat() {
+      const drawer = document.getElementById('saimon-drawer');
+      drawer.classList.toggle('hidden');
+  }
+
+  async function sendSaimonMessage() {
+      const inputField = document.getElementById('saimon-input');
+      const msgText = inputField.value.trim();
+      if (!msgText) return;
+
+      const chatContainer = document.getElementById('saimon-messages');
+      const csrfInput = document.querySelector('#saimon-input-box [name=csrfmiddlewaretoken]');
+      const csrftoken = csrfInput ? csrfInput.value : '';
+
+      chatContainer.insertAdjacentHTML('beforeend', `
+          <div class="saimon-msg saimon-msg--user">${escapeHtml(msgText)}</div>
+      `);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+      inputField.value = '';
+
+      const loadingId = 'loading-' + Date.now();
+      chatContainer.insertAdjacentHTML('beforeend', `
+          <div id="${loadingId}" class="saimon-msg saimon-msg--bot">Thinking...</div>
+      `);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      try {
+          const response = await fetch("{% url 'chatbot_query' %}", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrftoken
+              },
+              body: JSON.stringify({ message: msgText })
+          });
+
+          const data = await response.json();
+          const loader = document.getElementById(loadingId);
+          if (loader) loader.remove();
+
+          const responseText = data.response || data.error || "No response received.";
+          chatContainer.insertAdjacentHTML('beforeend', `
+              <div class="saimon-msg saimon-msg--bot">${escapeHtml(responseText)}</div>
+          `);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+      } catch (err) {
+          const loader = document.getElementById(loadingId);
+          if (loader) loader.remove();
+          chatContainer.insertAdjacentHTML('beforeend', `
+              <div class="saimon-msg saimon-msg--bot">Error communicating with Saimon.</div>
+          `);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+  }
+
+  function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  </script>
 {% endblock %}

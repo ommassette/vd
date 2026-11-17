@@ -3212,3 +3212,167 @@ a:focus-visible {
   .cs-cta__button,
   .project__case-study { transition: none; }
 }
+/* ===== Saimon AI Floating Widget (Bottom-Right) ===== */
+.saimon-widget {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+  font-family: inherit;
+}
+
+.saimon-trigger-wrap {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.saimon-logo-img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.saimon-logo-img:hover {
+  transform: scale(1.08);
+}
+
+.saimon-drawer {
+  position: absolute;
+  bottom: 68px;
+  right: 0;
+  width: 380px;
+  height: 520px;
+  background: #ffffff;
+  border: 1px solid rgba(34, 34, 34, 0.25);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.saimon-drawer.hidden {
+  display: none;
+}
+
+.saimon-header {
+  background: var(--ink);
+  color: #ffffff;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.saimon-close {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.saimon-close:hover {
+  opacity: 1;
+}
+
+.saimon-messages {
+  flex: 1;
+  padding: 1.25rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #fafafa;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.saimon-msg {
+  max-width: 85%;
+  padding: 0.75rem 1rem;
+  word-break: break-word;
+}
+
+.saimon-msg--bot {
+  background: #ffffff;
+  color: var(--ink);
+  border: 1px solid rgba(34, 34, 34, 0.15);
+  align-self: flex-start;
+}
+
+.saimon-msg--user {
+  background: var(--ink);
+  color: #ffffff;
+  align-self: flex-end;
+}
+
+.saimon-form {
+  border-top: 1px solid rgba(34, 34, 34, 0.2);
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.saimon-input {
+  flex: 1;
+  padding: 0.6rem 0;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(34, 34, 34, 0.3);
+  outline: none;
+  transition: border-color 0.25s ease;
+}
+
+.saimon-input:focus {
+  border-bottom-color: var(--ink);
+}
+
+.saimon-submit {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.saimon-submit:hover {
+  opacity: 0.7;
+}
+
+@media (max-width: 600px) {
+  .saimon-widget {
+    bottom: 20px;
+    right: 20px;
+  }
+  .saimon-drawer {
+    width: 300px;
+    height: 440px;
+  }
+}
+/* ===== Mobile Adjustment for Saimon Widget & Reach Out CTA ===== */
+@media (max-width: 768px) {
+  .saimon-widget {
+    bottom: 85px; /* Floats safely above the bottom reach-out CTA */
+    right: 20px;
+  }
+}

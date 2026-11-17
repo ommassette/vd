@@ -12,4 +12,5 @@ urlpatterns = [
     path('robots.txt', views.robots_txt, name='robots_txt'),
     path('articles/', views.articles, name='articles'),
     path('articles/<slug:slug>/', views.article_detail, name='article_detail'),
+    path('api/chatbot/', views.chatbot_query_view, name='chatbot_query'),
 ]

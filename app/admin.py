@@ -1,8 +1,22 @@
 # app/admin.py
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
-from django_otp.admin import OTPAdminSite
-from django_otp.plugins.otp_totp.models import TOTPDevice
+
+if getattr(settings, 'DEBUG', False):
+    admin_site = admin.site
+else:
+    from django_otp.admin import OTPAdminSite
+    from django_otp.plugins.otp_totp.models import TOTPDevice
+
+    class ConditionalOTPAdmin(OTPAdminSite):
+        pass
+    admin_site = ConditionalOTPAdmin(name='OTPAdmin')
+
+if not getattr(settings, 'DEBUG', False):
+    admin_site.register(User)
+    admin_site.register(Group)
+    admin_site.register(TOTPDevice)
 
 from .models import (
     Article,
@@ -25,19 +39,8 @@ from .models import (
     Testimonial,
     Typeface,
     UIComponent,
+    ServiceDocument,
 )
-
-
-class OTPAdmin(OTPAdminSite):
-    pass
-
-
-admin_site = OTPAdmin(name='OTPAdmin')
-
-# Register built-in auth and OTP device models
-admin_site.register(User)
-admin_site.register(Group)
-admin_site.register(TOTPDevice)
 
 
 class ProjectImageInline(admin.TabularInline):
@@ -280,3 +283,7 @@ class CaseStudyAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
     )
+
+@admin.register(ServiceDocument, site=admin_site)
+class ServiceDocumentAdmin(admin.ModelAdmin):
+    list_display = ('title', 'uploaded_at', 'file')
