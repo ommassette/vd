@@ -260,9 +260,10 @@ def case_study_detail(request, project_id):
 
 import json
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from app.rag_engine import generate_chatbot_response
 
+@csrf_exempt
 @require_POST
 def chatbot_query_view(request):
     try:
