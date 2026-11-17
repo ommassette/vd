@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 MODEL = os.environ.get("OLLAMA_CHAT_MODEL", "qwen2.5:3b")
 EMBED_MODEL = os.environ.get("OLLAMA_EMBED_MODEL", "nomic-embed-text-v2-moe")
 
-KEEP_ALIVE = "30m"      # keep BOTH models loaded between requests
-NUM_CTX = 3072          # keep constant on every call; changing it reloads the model
+KEEP_ALIVE = "5m"       # reduced to free RAM faster on 4GB VPS
+NUM_CTX = 1536          # optimized down from 3072 for faster CPU prompt processing
 EMBED_BATCH = 32        # chunks per embedding request
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 120
@@ -71,8 +71,8 @@ STOPWORDS = {
 # Text + embeddings
 # ----------------------------------------------------------------------------
 def clean_text(text: str) -> str:
-    text = re.sub(r"-\n(\w)", r"\1", text)               # re-join hyphenated words
-    text = re.sub(r"(?<!\n)\n(?!\n)", " ", text)         # flatten hard line breaks
+    text = re.sub(r"-\n(\w)", r"\1", text)
+    text = re.sub(r"(?<!\n)\n(?!\n)", " ", text)
     text = text.replace("•", "\n- ")
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
@@ -80,11 +80,10 @@ def clean_text(text: str) -> str:
 
 
 def embed_texts(texts: List[str], prefix: str) -> List[List[float]]:
-    """Embed many texts with few requests (batching is the big upload speed-up)."""
     out: List[List[float]] = []
     for i in range(0, len(texts), EMBED_BATCH):
         batch = [prefix + t for t in texts[i:i + EMBED_BATCH]]
-        resp = ollama.embed(model=EMBED_MODEL, input=batch, keep_alive=KEEP_ALIVE)
+        resp = ollama.embed(model=EMBED_MODEL, input=batch, keep_alive=KEEP_ALIVE, options={"timeout": 120.0})
         out.extend(resp.embeddings)
     return out
 
@@ -95,7 +94,7 @@ def embed_query(query: str) -> tuple:
 
 
 # ----------------------------------------------------------------------------
-# Neo4j (created once, schema refresh disabled)
+# Neo4j
 # ----------------------------------------------------------------------------
 _graph = None
 _graph_lock = threading.Lock()
@@ -118,7 +117,6 @@ _graph_queue: "queue.Queue[List[Document]]" = queue.Queue()
 
 
 def _graph_worker() -> None:
-    """Single background worker so graph extraction never piles up in parallel."""
     transformer = LLMGraphTransformer(
         llm=ChatOllama(model=MODEL, temperature=0, keep_alive=KEEP_ALIVE)
     )
@@ -160,7 +158,6 @@ def process_and_ingest_document(file_path: str) -> None:
     source = str(path)
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
 
-    # Skip unchanged files; replace changed ones (removes stale chunks)
     existing = collection_research.get(where={"source": source}, limit=1, include=["metadatas"])
     if existing["ids"]:
         if (existing["metadatas"][0] or {}).get("file_hash") == digest:
@@ -174,7 +171,7 @@ def process_and_ingest_document(file_path: str) -> None:
         page.page_content = clean_text(page.page_content)
     pages = [p for p in pages if p.page_content]
     if not pages:
-        logger.warning("No extractable text in %s (scanned PDF? it needs OCR)", file_path)
+        logger.warning("No extractable text in %s", file_path)
         return
 
     splitter = RecursiveCharacterTextSplitter(
@@ -187,7 +184,6 @@ def process_and_ingest_document(file_path: str) -> None:
         return
 
     texts = [c.page_content for c in chunks]
-    # Embed with the file title for context, but store/return the raw chunk text
     embeddings = embed_texts([f"{path.stem}\n{t}" for t in texts], DOC_PREFIX)
 
     ids = [f"{digest[:12]}_{i}" for i in range(len(chunks))]
@@ -203,7 +199,7 @@ def process_and_ingest_document(file_path: str) -> None:
     _upsert(ids, texts, metadatas, embeddings)
 
     if ENABLE_GRAPH:
-        step = max(1, len(texts) // GRAPH_MAX_CHUNKS)   # sample across the whole doc
+        step = max(1, len(texts) // GRAPH_MAX_CHUNKS)
         sample = texts[::step][:GRAPH_MAX_CHUNKS]
         _graph_queue.put([Document(page_content=t, metadata={"source": source}) for t in sample])
 
@@ -248,7 +244,6 @@ def _label(meta: dict) -> str:
 
 
 def hybrid_retrieve(query: str, k: int = TOP_K, min_similarity: float = MIN_SIMILARITY) -> str:
-    """Returns context text, or "" when nothing relevant was found."""
     query_embedding = list(embed_query(query))
 
     graph_future = None
@@ -266,7 +261,6 @@ def hybrid_retrieve(query: str, k: int = TOP_K, min_similarity: float = MIN_SIMI
     distances = response.get("distances", [[]])[0]
     metadatas = response.get("metadatas", [[]])[0]
 
-    # Print `1 - dist` here while testing to tune MIN_SIMILARITY for your data
     passages = [
         f"[{_label(meta)}]\n{doc}"
         for doc, dist, meta in zip(documents, distances, metadatas)
@@ -285,21 +279,19 @@ def hybrid_retrieve(query: str, k: int = TOP_K, min_similarity: float = MIN_SIMI
 # Generation
 # ----------------------------------------------------------------------------
 def warm_up() -> None:
-    """Call once at app startup so the first user question isn't slow."""
-    ollama.embed(model=EMBED_MODEL, input="warm up", keep_alive=KEEP_ALIVE)
+    ollama.embed(model=EMBED_MODEL, input="warm up", keep_alive=KEEP_ALIVE, options={"timeout": 120.0})
     ollama.chat(
         model=MODEL,
         messages=[{"role": "user", "content": "hi"}],
-        options={"num_predict": 1, "num_ctx": NUM_CTX},
+        options={"num_predict": 1, "num_ctx": NUM_CTX, "timeout": 120.0},
         keep_alive=KEEP_ALIVE,
     )
 
 
 def stream_chatbot_response(question: str) -> Iterator[str]:
-    """Yields the answer token by token. Use this in your API for a fast first response."""
     context = hybrid_retrieve(question)
     if not context:
-        yield NO_ANSWER          # no LLM call needed
+        yield NO_ANSWER
         return
 
     stream = ollama.chat(
@@ -318,5 +310,4 @@ def stream_chatbot_response(question: str) -> Iterator[str]:
 
 
 def generate_chatbot_response(question: str) -> str:
-    """Non-streaming wrapper, same signature as before."""
     return "".join(stream_chatbot_response(question))
