@@ -191,12 +191,12 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
   if (!wizard) return;
 
   const serviceInput = wizard.querySelector('input[name="service"]');
-  const timelineInput = wizard.querySelector('input[name="timeline"]');
   const emailInput = wizard.querySelector('input[name="email"]');
   const phoneInput = wizard.querySelector('input[name="phone"]');
   const emailError = wizard.querySelector('[data-email-error]');
   const phoneError = wizard.querySelector('[data-phone-error]');
-  const selectedServices = new Set();
+  const priceList = wizard.querySelector('#priceList');
+  const selectedServices = new Map(); // name -> price
 
   function goToStep(stepNum) {
     const currentStep = wizard.querySelector('.contact-step.is-active');
@@ -223,33 +223,52 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
   serviceChoices.forEach(choice => {
     choice.addEventListener('click', () => {
       const value = choice.dataset.value;
+      const price = choice.dataset.price || '';
+
       if (selectedServices.has(value)) {
         selectedServices.delete(value);
         choice.classList.remove('is-selected');
       } else {
-        selectedServices.add(value);
+        selectedServices.set(value, price);
         choice.classList.add('is-selected');
       }
-      serviceInput.value = Array.from(selectedServices).join(', ');
+
+      serviceInput.value = Array.from(selectedServices.keys()).join(', ');
       if (continueBtn) continueBtn.disabled = selectedServices.size === 0;
     });
   });
 
+  // ---- Continue → populate price list, advance to step 2 ----
   if (continueBtn) {
     continueBtn.addEventListener('click', () => {
-      if (selectedServices.size > 0) goToStep(2);
+      if (selectedServices.size === 0) return;
+
+      if (priceList) {
+        priceList.innerHTML = '';
+
+        selectedServices.forEach((price, name) => {
+          const li = document.createElement('li');
+          li.className = 'contact-price-item';
+
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'contact-price-service';
+          nameSpan.textContent = name;
+
+          const priceSpan = document.createElement('span');
+          priceSpan.className = 'contact-price-value';
+          priceSpan.textContent = price || 'On request';
+
+          li.appendChild(nameSpan);
+          li.appendChild(priceSpan);
+          priceList.appendChild(li);
+        });
+      }
+
+      goToStep(2);
     });
   }
 
-  // ---- Step 2: timeline ----
-  wizard.querySelectorAll('.contact-step[data-step="2"] .contact-choice').forEach(choice => {
-    choice.addEventListener('click', () => {
-      timelineInput.value = choice.dataset.value;
-      goToStep(3);
-    });
-  });
-
-  // ---- Step 3: validation helpers ----
+  // ---- Step 2: validation helpers ----
   function normalizePhone(raw) {
     if (!raw) return '';
     let digits = raw.replace(/[^\d+]/g, '');

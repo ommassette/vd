@@ -85,20 +85,18 @@ def contact(request):
     if request.method == 'POST':
         if 'service' in request.POST:
             service = request.POST.get('service')
-            timeline = request.POST.get('timeline')
             email = (request.POST.get('email') or '').strip()
             phone = (request.POST.get('phone') or '').strip()
 
-            if service and timeline and (email or phone):
+            if service and (email or phone):
                 ContactMessage.objects.create(
                     service=service,
-                    timeline=timeline,
                     email=email or None,
                     phone=phone or None,
                 )
                 logger.info("Contact message saved successfully.")
 
-                contact_lines = [f"Service: {service}", f"Timeline: {timeline}"]
+                contact_lines = [f"Service: {service}"]
                 if email:
                     contact_lines.append(f"Email: {email}")
                 if phone:
@@ -123,8 +121,7 @@ def contact(request):
                                 f"Hello,\n\n"
                                 f"Thank you for reaching out to Valgus Designs.\n\n"
                                 f"We've received your request regarding:\n"
-                                f"  • Service: {service}\n"
-                                f"  • Timeline: {timeline}\n\n"
+                                f"  • Service: {service}\n\n"
                                 f"Our team will review your inquiry and get back to you shortly.\n\n"
                                 f"Best regards,\n"
                                 f"Valgus Designs Team"
@@ -204,6 +201,7 @@ def contact(request):
     }
     return render(request, 'contact.html', context)
 
+
 @cache_page(60 * 15)
 @require_http_methods(["GET"])
 def privacy_policy(request):
@@ -229,6 +227,7 @@ Sitemap: https://valgusdesigns.com/sitemap.xml
 """
     return HttpResponse(content.strip(), content_type="text/plain")
 
+
 @cache_page(60 * 15)
 @require_http_methods(["GET"])
 def articles(request):
@@ -245,6 +244,7 @@ def article_detail(request, slug):
     article = get_object_or_404(Article, slug=slug, is_published=True)
     context = {'article': article}
     return render(request, 'article.html', context)
+
 
 @cache_page(60 * 15)
 @require_http_methods(["GET"])
@@ -263,6 +263,7 @@ def case_study_detail(request, project_id):
 
     return render(request, 'case_study.html', {'case_study': case_study})
 
+
 @csrf_exempt
 @require_POST
 def chatbot_query_view(request):
@@ -275,7 +276,7 @@ def chatbot_query_view(request):
 
         if not question:
             return JsonResponse({"error": "Empty message"}, status=400)
-        
+
         answer_text = generate_chatbot_response(question)
         return JsonResponse({"response": answer_text})
     except Exception as e:
