@@ -281,3 +281,8 @@ def chatbot_query_view(request):
         return JsonResponse({"response": answer_text})
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+@cache_page(60 * 15)
+@require_http_methods(["GET"])
+def impressum(request):
+    return render(request, 'impressum.html')

@@ -13,4 +13,5 @@ urlpatterns = [
     path('articles/', views.articles, name='articles'),
     path('articles/<slug:slug>/', views.article_detail, name='article_detail'),
     path('api/chatbot/', views.chatbot_query_view, name='chatbot_query'),
+    path('impressum/', views.impressum, name='impressum'),
 ]
