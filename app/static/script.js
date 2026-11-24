@@ -1,3 +1,33 @@
+// ===== Currency toggle =====
+(function () {
+  const STORAGE_KEY = 'preferred_currency';
+  const stored = localStorage.getItem(STORAGE_KEY);
+  const initial = (stored === 'kes' || stored === 'eur') ? stored : 'eur';
+
+  function applyCurrency(currency) {
+    document.body.setAttribute('data-currency', currency);
+
+    document.querySelectorAll('[data-currency-toggle]').forEach(btn => {
+      const isActive = btn.dataset.currency === currency;
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    document.dispatchEvent(new CustomEvent('currencychange', { detail: { currency } }));
+  }
+
+  // Set the initial currency immediately (before first paint of prices)
+  applyCurrency(initial);
+
+  document.querySelectorAll('[data-currency-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const currency = btn.dataset.currency;
+      localStorage.setItem(STORAGE_KEY, currency);
+      applyCurrency(currency);
+    });
+  });
+})();
+
 // ===== Scroll reveal =====
 const revealSelectors = [
   '.intro',
@@ -112,6 +142,7 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     });
   }
 })();
+
 // ===== Image lightbox =====
 (function () {
   const lightbox = document.querySelector('.lightbox');
@@ -185,6 +216,7 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     else if (e.key === 'ArrowRight') next();
   });
 })();
+
 // ===== Contact wizard =====
 (function () {
   const wizard = document.querySelector('.contact-wizard');
@@ -196,7 +228,7 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
   const emailError = wizard.querySelector('[data-email-error]');
   const phoneError = wizard.querySelector('[data-phone-error]');
   const priceList = wizard.querySelector('#priceList');
-  const selectedServices = new Map(); // name -> price
+  const selectedServices = new Map(); // name -> { eur, kes }
 
   function goToStep(stepNum) {
     const currentStep = wizard.querySelector('.contact-step.is-active');
@@ -223,13 +255,14 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
   serviceChoices.forEach(choice => {
     choice.addEventListener('click', () => {
       const value = choice.dataset.value;
-      const price = choice.dataset.price || '';
+      const priceEur = choice.dataset.priceEur || '';
+      const priceKes = choice.dataset.priceKes || '';
 
       if (selectedServices.has(value)) {
         selectedServices.delete(value);
         choice.classList.remove('is-selected');
       } else {
-        selectedServices.set(value, price);
+        selectedServices.set(value, { eur: priceEur, kes: priceKes });
         choice.classList.add('is-selected');
       }
 
@@ -238,35 +271,48 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     });
   });
 
+  // ---- Price list renderer (reads live currency) ----
+  function renderPriceList() {
+    if (!priceList) return;
+
+    const currency = document.body.getAttribute('data-currency') || 'eur';
+
+    priceList.innerHTML = '';
+
+    selectedServices.forEach((prices, name) => {
+      const li = document.createElement('li');
+      li.className = 'contact-price-item';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'contact-price-service';
+      nameSpan.textContent = name;
+
+      const priceSpan = document.createElement('span');
+      priceSpan.className = 'contact-price-value';
+      const value = currency === 'kes' ? prices.kes : prices.eur;
+      priceSpan.textContent = value || 'On request';
+
+      li.appendChild(nameSpan);
+      li.appendChild(priceSpan);
+      priceList.appendChild(li);
+    });
+  }
+
   // ---- Continue → populate price list, advance to step 2 ----
   if (continueBtn) {
     continueBtn.addEventListener('click', () => {
       if (selectedServices.size === 0) return;
-
-      if (priceList) {
-        priceList.innerHTML = '';
-
-        selectedServices.forEach((price, name) => {
-          const li = document.createElement('li');
-          li.className = 'contact-price-item';
-
-          const nameSpan = document.createElement('span');
-          nameSpan.className = 'contact-price-service';
-          nameSpan.textContent = name;
-
-          const priceSpan = document.createElement('span');
-          priceSpan.className = 'contact-price-value';
-          priceSpan.textContent = price || 'On request';
-
-          li.appendChild(nameSpan);
-          li.appendChild(priceSpan);
-          priceList.appendChild(li);
-        });
-      }
-
+      renderPriceList();
       goToStep(2);
     });
   }
+
+  // ---- Re-render prices when currency is toggled ----
+  document.addEventListener('currencychange', () => {
+    if (priceList && priceList.children.length > 0) {
+      renderPriceList();
+    }
+  });
 
   // ---- Step 2: validation helpers ----
   function normalizePhone(raw) {
@@ -352,6 +398,7 @@ document.querySelectorAll('.service-card__toggle').forEach(btn => {
     if (phoneInput && phoneRaw) phoneInput.value = normalizePhone(phoneRaw);
   });
 })();
+
 // Auto-dismiss flash messages
 document.querySelectorAll('.messages .message').forEach(el => {
   setTimeout(() => {

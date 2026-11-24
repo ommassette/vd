@@ -3407,3 +3407,62 @@ a:focus-visible {
   white-space: nowrap;
   letter-spacing: 0.02em;
 }
+/* ===== Currency toggle ===== */
+.currency-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid rgba(34, 34, 34, 0.2);
+  border-radius: 100px;
+  padding: 3px;
+  background: #fff;
+}
+
+.currency-btn {
+  padding: 0.45rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.currency-btn.is-active {
+  background: var(--ink);
+  color: #fff;
+}
+
+.currency-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Toggle container in the services page */
+.services-currency-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 clamp(1rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2rem);
+}
+
+/* Toggle in contact step 2 */
+.contact-price-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+/* Price display — hide the inactive currency */
+body[data-currency="eur"] [data-currency-amount="kes"] { display: none !important; }
+body[data-currency="kes"] [data-currency-amount="eur"] { display: none !important; }
+
+/* Service table cell spacing for stacked currency spans */
+.service-card__table td [data-currency-amount] {
+  display: inline-block;
+}

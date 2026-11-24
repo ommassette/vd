@@ -17,6 +17,13 @@
     </section>
   </main>
 
+  <div class="services-currency-bar">
+    <div class="currency-toggle" role="group" aria-label="Currency">
+      <button type="button" class="currency-btn" data-currency-toggle data-currency="eur" aria-pressed="false">EUR</button>
+      <button type="button" class="currency-btn" data-currency-toggle data-currency="kes" aria-pressed="false">KES</button>
+    </div>
+  </div>
+
   <div class="stack services-stack">
     {% for service in service_items %}
       <section class="stack-card service-card">
@@ -30,9 +37,18 @@
               <td>{{ service.premium_name }}</td>
             </tr>
             <tr>
-              <td>{{ service.basic_price }}</td>
-              <td>{{ service.standard_price }}</td>
-              <td>{{ service.premium_price }}</td>
+              <td>
+                <span data-currency-amount="eur">{{ service.basic_price|default:"—" }}</span>
+                <span data-currency-amount="kes">{{ service.basic_price_kes|default:"—" }}</span>
+              </td>
+              <td>
+                <span data-currency-amount="eur">{{ service.standard_price|default:"—" }}</span>
+                <span data-currency-amount="kes">{{ service.standard_price_kes|default:"—" }}</span>
+              </td>
+              <td>
+                <span data-currency-amount="eur">{{ service.premium_price|default:"—" }}</span>
+                <span data-currency-amount="kes">{{ service.premium_price_kes|default:"—" }}</span>
+              </td>
             </tr>
           </table>
           <button type="button" class="service-card__toggle" aria-expanded="false">

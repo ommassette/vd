@@ -78,8 +78,22 @@ class ServicesPageContentAdmin(admin.ModelAdmin):
 
 @admin.register(ServiceItem, site=admin_site)
 class ServiceItemAdmin(admin.ModelAdmin):
-    list_display = ('title', 'order')
+    list_display = ('title', 'basic_price', 'basic_price_kes', 'order')
     list_editable = ('order',)
+    fieldsets = (
+        ('Service', {
+            'fields': ('title', 'description', 'order'),
+        }),
+        ('Basic Tier', {
+            'fields': ('basic_name', 'basic_price', 'basic_price_kes', 'basic_features'),
+        }),
+        ('Standard Tier', {
+            'fields': ('standard_name', 'standard_price', 'standard_price_kes', 'standard_features'),
+        }),
+        ('Premium Tier', {
+            'fields': ('premium_name', 'premium_price', 'premium_price_kes', 'premium_features'),
+        }),
+    )
 
 
 @admin.register(SiteSettings, site=admin_site)

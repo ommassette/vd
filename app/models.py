@@ -120,17 +120,38 @@ class ServicesPageContent(models.Model):
 class ServiceItem(models.Model):
     title = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    
+
     basic_name = models.CharField(max_length=100, blank=True, null=True, default="Basic")
-    basic_price = models.CharField(max_length=50, blank=True, null=True, default="$500")
+    basic_price = models.CharField(
+        max_length=50, blank=True, null=True, default="€500",
+        help_text="Price in EUR. Include the symbol — e.g. '€500' or '€1,200'."
+    )
+    basic_price_kes = models.CharField(
+        max_length=50, blank=True, null=True,
+        help_text="Price in KES. Include 'KES' prefix — e.g. 'KES 75,000'."
+    )
     basic_features = models.TextField(blank=True, null=True, help_text="Put each feature on a new line")
 
     standard_name = models.CharField(max_length=100, blank=True, null=True, default="Standard")
-    standard_price = models.CharField(max_length=50, blank=True, null=True, default="$1,200")
+    standard_price = models.CharField(
+        max_length=50, blank=True, null=True, default="€1,200",
+        help_text="Price in EUR. Include the symbol — e.g. '€1,200'."
+    )
+    standard_price_kes = models.CharField(
+        max_length=50, blank=True, null=True,
+        help_text="Price in KES. Include 'KES' prefix — e.g. 'KES 180,000'."
+    )
     standard_features = models.TextField(blank=True, null=True, help_text="Put each feature on a new line")
 
     premium_name = models.CharField(max_length=100, blank=True, null=True, default="Premium")
-    premium_price = models.CharField(max_length=50, blank=True, null=True, default="$2,500")
+    premium_price = models.CharField(
+        max_length=50, blank=True, null=True, default="€2,500",
+        help_text="Price in EUR. Include the symbol — e.g. '€2,500'."
+    )
+    premium_price_kes = models.CharField(
+        max_length=50, blank=True, null=True,
+        help_text="Price in KES. Include 'KES' prefix — e.g. 'KES 375,000'."
+    )
     premium_features = models.TextField(blank=True, null=True, help_text="Put each feature on a new line")
 
     order = models.PositiveIntegerField(blank=True, null=True, default=0)

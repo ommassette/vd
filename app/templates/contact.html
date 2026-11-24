@@ -30,7 +30,8 @@
                   <button type="button"
                           class="contact-choice"
                           data-value="{{ service.title }}"
-                          data-price="{{ service.basic_price|default:'' }}{% if service.premium_price %} – {{ service.premium_price }}{% endif %}">
+                          data-price-eur="{% if service.basic_price %}{{ service.basic_price }}{% if service.premium_price %} – {{ service.premium_price }}{% endif %}{% endif %}"
+                          data-price-kes="{% if service.basic_price_kes %}{{ service.basic_price_kes }}{% if service.premium_price_kes %} – {{ service.premium_price_kes }}{% endif %}{% endif %}">
                     {{ service.title }}
                   </button>
                 {% endif %}
@@ -47,6 +48,13 @@
           <div class="contact-step" data-step="2">
             <h3 class="contact-step__question">A note on pricing</h3>
             <p class="contact-step__hint">For the service(s) you selected, here is the typical price range:</p>
+
+            <div class="contact-price-toggle">
+              <div class="currency-toggle" role="group" aria-label="Currency">
+                <button type="button" class="currency-btn" data-currency-toggle data-currency="eur" aria-pressed="false">EUR</button>
+                <button type="button" class="currency-btn" data-currency-toggle data-currency="kes" aria-pressed="false">KES</button>
+              </div>
+            </div>
 
             <ul class="contact-price-list" id="priceList">
               <!-- filled by JS from the selected services -->
