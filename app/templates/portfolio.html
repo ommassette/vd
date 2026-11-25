@@ -15,7 +15,7 @@
       </h2>
       <div class="project__strip">
         {% for img in project.images.all %}
-          <img src="{{ img.image.url }}" alt="{{ project.title }} — image {{ forloop.counter }}" />
+          <img src="{{ img.optimized_url|default:img.image.url }}" alt="{{ project.title }} — image {{ forloop.counter }}" loading="lazy" />
         {% endfor %}
       </div>
       <p class="project__desc">{{ project.description }}</p>
