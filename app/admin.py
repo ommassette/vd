@@ -301,3 +301,30 @@ class CaseStudyAdmin(admin.ModelAdmin):
 @admin.register(ServiceDocument, site=admin_site)
 class ServiceDocumentAdmin(admin.ModelAdmin):
     list_display = ('title', 'uploaded_at', 'file')
+
+from django.contrib import admin
+from .models import ConsentLog
+
+
+@admin.register(ConsentLog)
+class ConsentLogAdmin(admin.ModelAdmin):
+    list_display = (
+        "consent_id",
+        "action",
+        "fonts_and_media",
+        "page_path",
+        "created_at",
+    )
+    list_filter = ("action", "fonts_and_media", "created_at")
+    search_fields = ("consent_id", "page_path", "ip_hash")
+    readonly_fields = (
+        "consent_id",
+        "essential",
+        "fonts_and_media",
+        "action",
+        "page_path",
+        "ip_hash",
+        "user_agent_hash",
+        "created_at",
+    )
+    ordering = ("-created_at",)
