@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
   <!-- Primary SEO Meta Tags -->
   <title>{% block title %}Valgus Creative | Web Development & Branding Agency for Kenya, Germany & France{% endblock %}</title>
   <meta name="title" content="Valgus Creative | Web Development & Branding Agency for Kenya, Germany & France">
@@ -32,10 +32,9 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dl4el6qws/image/upload/v1794153683/Untitled_Design_2_fyyyrk.png" />
 
-  <!-- Styles (Note: Self-host Raleway .woff2 locally for full German/French GDPR compliance) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+  <!-- Gated Google Fonts CDN (loaded only after consent) -->
+  <link id="google-fonts-stylesheet" rel="alternate" type="text/css" data-fonts-href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;600;900&display=swap" />
+
   <link rel="stylesheet" href="{% static 'styles.css' %}" />
 
   <!-- Local Business & International GEO Structured Data (JSON-LD) -->
@@ -133,7 +132,10 @@
   </script>
   {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body
+  data-consent-endpoint="{% url 'log_consent' %}"
+  data-csrf-token="{{ csrf_token }}"
+>
 
   <nav class="nav">
     <a href="{% url 'services' %}">SERVICES</a>
@@ -170,10 +172,35 @@
           <a href="{% url 'impressum' %}" class="footer__item">Impressum</a>
           <a href="{{ site_settings.privacy_policy_url|default:'#' }}" class="footer__item">Privacy Policy</a>
           <a href="{{ site_settings.terms_url|default:'#' }}" class="footer__item">Terms</a>
+          <button type="button" id="openConsentModal" class="footer__item consent-trigger">Privacy Settings</button>
         </div>
       </div>
     </div>
   </footer>
+
+  <div id="consentBanner" class="consent-banner" role="dialog" aria-live="polite" aria-label="Privacy and cookie preferences" hidden>
+    <div class="consent-banner__inner">
+      <p class="consent-banner__text">
+        We use essential site storage to operate this website. External Google Fonts and Cloudinary media can be loaded with your consent.
+      </p>
+      <div class="consent-banner__actions">
+        <button type="button" id="consentRejectAll" class="consent-btn consent-btn--equal">Reject All</button>
+        <button type="button" id="consentCustomize" class="consent-btn consent-btn--secondary">Customize</button>
+        <button type="button" id="consentAcceptAll" class="consent-btn consent-btn--equal">Accept All</button>
+      </div>
+      <div id="consentPrefs" class="consent-banner__prefs" hidden>
+        <label class="consent-pref">
+          <input type="checkbox" checked disabled />
+          <span>Essential storage (required)</span>
+        </label>
+        <label class="consent-pref">
+          <input type="checkbox" id="consentFontsMedia" />
+          <span>Google Fonts CDN &amp; Cloudinary external media</span>
+        </label>
+        <button type="button" id="consentSavePrefs" class="consent-btn consent-btn--secondary">Save Preferences</button>
+      </div>
+    </div>
+  </div>
 
   <script src="{% static 'script.js' %}"></script>
 </body>

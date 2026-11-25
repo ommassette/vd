@@ -408,3 +408,169 @@ document.querySelectorAll('.messages .message').forEach(el => {
     setTimeout(() => el.remove(), 700);
   }, 5000);
 });
+// ===== GDPR / DSGVO / RGPD Consent & Backend Logger =====
+(function () {
+  const CONSENT_KEY = 'valgus_consent_v1';
+  const banner = document.getElementById('consentBanner');
+  const prefsBox = document.getElementById('consentPrefs');
+  const fontsMediaCheckbox = document.getElementById('consentFontsMedia');
+  const acceptAllBtn = document.getElementById('consentAcceptAll');
+  const rejectAllBtn = document.getElementById('consentRejectAll');
+  const customizeBtn = document.getElementById('consentCustomize');
+  const savePrefsBtn = document.getElementById('consentSavePrefs');
+  const openModalBtn = document.getElementById('openConsentModal');
+
+  if (!banner) return;
+
+  const endpoint = document.body.dataset.consentEndpoint;
+  const csrfToken = document.body.dataset.csrfToken;
+
+  function getCookieValue(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  }
+
+  function generateId() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID();
+    }
+    return 'c_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+  }
+
+  function readStoredConsent() {
+    try {
+      const raw = localStorage.getItem(CONSENT_KEY) || getCookieValue(CONSENT_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function writeStoredConsent(record) {
+    const serialized = JSON.stringify(record);
+    try {
+      localStorage.setItem(CONSENT_KEY, serialized);
+    } catch (_) {
+      // Fallback to cookie only if storage is blocked
+    }
+    const maxAge = 60 * 60 * 24 * 180;
+    const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${CONSENT_KEY}=${encodeURIComponent(serialized)}; path=/; max-age=${maxAge}; SameSite=Lax${secureFlag}`;
+  }
+
+  function applyMediaAndFonts(allowed) {
+    const fontLink = document.getElementById('google-fonts-stylesheet');
+    if (fontLink) {
+      const href = fontLink.dataset.fontsHref;
+      if (allowed && href) {
+        fontLink.setAttribute('rel', 'stylesheet');
+        fontLink.setAttribute('href', href);
+        document.body.setAttribute('data-fonts-loaded', 'true');
+      } else {
+        fontLink.setAttribute('rel', 'alternate');
+        fontLink.removeAttribute('href');
+        document.body.setAttribute('data-fonts-loaded', 'false');
+      }
+    }
+
+    document.querySelectorAll('[data-cloudinary-src]').forEach(el => {
+      if (allowed) {
+        const src = el.dataset.cloudinarySrc;
+        if (src && el.getAttribute('src') !== src) {
+          el.setAttribute('src', src);
+        }
+      }
+    });
+  }
+
+  function sendBackendLog(record, action) {
+    if (!endpoint) return;
+
+    const payload = JSON.stringify({
+      consent_id: record.consent_id,
+      essential: true,
+      fonts_and_media: Boolean(record.fonts_and_media),
+      action: action,
+      page_path: window.location.pathname
+    });
+
+    const token = csrfToken || getCookieValue('csrftoken');
+
+    fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': token || ''
+      },
+      body: payload,
+      keepalive: true
+    }).catch(() => {
+      // Silent fail on network hiccup; consent state remains saved locally
+    });
+  }
+
+  function saveChoice(fontsAndMedia, action) {
+    const existing = readStoredConsent();
+    const record = {
+      consent_id: (existing && existing.consent_id) ? existing.consent_id : generateId(),
+      essential: true,
+      fonts_and_media: Boolean(fontsAndMedia),
+      updated_at: new Date().toISOString()
+    };
+
+    writeStoredConsent(record);
+    applyMediaAndFonts(record.fonts_and_media);
+    sendBackendLog(record, action);
+
+    if (fontsMediaCheckbox) {
+      fontsMediaCheckbox.checked = record.fonts_and_media;
+    }
+    banner.hidden = true;
+    if (prefsBox) prefsBox.hidden = true;
+  }
+
+  const current = readStoredConsent();
+  if (current) {
+    applyMediaAndFonts(Boolean(current.fonts_and_media));
+    if (fontsMediaCheckbox) {
+      fontsMediaCheckbox.checked = Boolean(current.fonts_and_media);
+    }
+    banner.hidden = true;
+  } else {
+    applyMediaAndFonts(false);
+    banner.hidden = false;
+  }
+
+  if (acceptAllBtn) {
+    acceptAllBtn.addEventListener('click', () => saveChoice(true, 'accept_all'));
+  }
+
+  if (rejectAllBtn) {
+    rejectAllBtn.addEventListener('click', () => saveChoice(false, 'reject_all'));
+  }
+
+  if (customizeBtn && prefsBox) {
+    customizeBtn.addEventListener('click', () => {
+      prefsBox.hidden = !prefsBox.hidden;
+    });
+  }
+
+  if (savePrefsBtn) {
+    savePrefsBtn.addEventListener('click', () => {
+      const checked = fontsMediaCheckbox ? Boolean(fontsMediaCheckbox.checked) : false;
+      saveChoice(checked, 'custom');
+    });
+  }
+
+  if (openModalBtn) {
+    openModalBtn.addEventListener('click', () => {
+      const latest = readStoredConsent();
+      if (fontsMediaCheckbox) {
+        fontsMediaCheckbox.checked = Boolean(latest && latest.fonts_and_media);
+      }
+      if (prefsBox) prefsBox.hidden = false;
+      banner.hidden = false;
+    });
+  }
+})();

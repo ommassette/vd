@@ -286,3 +286,53 @@ def chatbot_query_view(request):
 @require_http_methods(["GET"])
 def impressum(request):
     return render(request, 'impressum.html')
+
+from .models import ConsentLog
+
+
+def _get_client_ip(request):
+    cf_ip = request.META.get("HTTP_CF_CONNECTING_IP")
+    if cf_ip:
+        return cf_ip.strip()
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        return x_forwarded_for.split(",")[0].strip()
+    return request.META.get("REMOTE_ADDR", "")
+
+
+@require_POST
+def log_consent(request):
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        logger.warning("Invalid JSON received on consent log endpoint.")
+        return JsonResponse({"error": "Invalid JSON payload"}, status=400)
+
+    consent_id = str(data.get("consent_id", "")).strip()[:64]
+    action = str(data.get("action", "")).strip()[:32]
+    page_path = str(data.get("page_path", "/")).strip()[:255] or "/"
+    fonts_and_media = bool(data.get("fonts_and_media", False))
+
+    allowed_actions = {"accept_all", "reject_all", "custom", "update"}
+    if not consent_id or action not in allowed_actions:
+        logger.warning("Malformed consent log request: action=%s", action)
+        return JsonResponse({"error": "Invalid consent payload"}, status=400)
+
+    ip_address = _get_client_ip(request)
+    user_agent = request.META.get("HTTP_USER_AGENT", "")
+
+    try:
+        ConsentLog.objects.create(
+            consent_id=consent_id,
+            essential=True,
+            fonts_and_media=fonts_and_media,
+            action=action,
+            page_path=page_path,
+            ip_hash=ConsentLog.hash_value(ip_address),
+            user_agent_hash=ConsentLog.hash_value(user_agent),
+        )
+        logger.info("Consent logged: id=%s action=%s media=%s", consent_id[:8], action, fonts_and_media)
+        return JsonResponse({"status": "logged", "fonts_and_media": fonts_and_media})
+    except Exception as exc:
+        logger.error("Failed to save consent log: %s", exc)
+        return JsonResponse({"error": "Failed to record consent"}, status=500)

@@ -590,3 +590,29 @@ class ServiceDocument(models.Model):
 def auto_delete_rag_vector(sender, instance, **kwargs):
     if instance.file:
         delete_document_from_vector_db(instance.file.path)
+
+import hashlib
+from django.db import models
+
+
+class ConsentLog(models.Model):
+    consent_id = models.CharField(max_length=64, db_index=True)
+    essential = models.BooleanField(default=True)
+    fonts_and_media = models.BooleanField(default=False)
+    action = models.CharField(max_length=32)  # accept_all, reject_all, custom, update
+    page_path = models.CharField(max_length=255, blank=True, default="/")
+    ip_hash = models.CharField(max_length=64, blank=True)
+    user_agent_hash = models.CharField(max_length=64, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.consent_id[:8]} | media={self.fonts_and_media} | {self.action}"
+
+    @staticmethod
+    def hash_value(value):
+        if not value:
+            return ""
+        return hashlib.sha256(value.encode("utf-8")).hexdigest()
