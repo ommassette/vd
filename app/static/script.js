@@ -460,28 +460,32 @@ document.querySelectorAll('.messages .message').forEach(el => {
   }
 
   function applyMediaAndFonts(allowed) {
-    const fontLink = document.getElementById('google-fonts-stylesheet');
-    if (fontLink) {
-      const href = fontLink.dataset.fontsHref;
-      if (allowed && href) {
-        fontLink.setAttribute('rel', 'stylesheet');
-        fontLink.setAttribute('href', href);
-        document.body.setAttribute('data-fonts-loaded', 'true');
-      } else {
-        fontLink.setAttribute('rel', 'alternate');
-        fontLink.removeAttribute('href');
-        document.body.setAttribute('data-fonts-loaded', 'false');
-      }
-    }
+    const existingFont = document.getElementById('google-fonts-raleway');
 
-    document.querySelectorAll('[data-cloudinary-src]').forEach(el => {
-      if (allowed) {
-        const src = el.dataset.cloudinarySrc;
-        if (src && el.getAttribute('src') !== src) {
-          el.setAttribute('src', src);
-        }
+    if (allowed) {
+      if (!existingFont) {
+        const pre1 = document.createElement('link');
+        pre1.rel = 'preconnect';
+        pre1.href = 'https://fonts.googleapis.com';
+        document.head.appendChild(pre1);
+
+        const pre2 = document.createElement('link');
+        pre2.rel = 'preconnect';
+        pre2.href = 'https://fonts.gstatic.com';
+        pre2.crossOrigin = 'anonymous';
+        document.head.appendChild(pre2);
+
+        const link = document.createElement('link');
+        link.id = 'google-fonts-raleway';
+        link.rel = 'stylesheet';
+        link.href = 'https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;600;900&display=swap';
+        document.head.appendChild(link);
       }
-    });
+      document.body.setAttribute('data-fonts-loaded', 'true');
+    } else {
+      if (existingFont) existingFont.remove();
+      document.body.setAttribute('data-fonts-loaded', 'false');
+    }
   }
 
   function sendBackendLog(record, action) {

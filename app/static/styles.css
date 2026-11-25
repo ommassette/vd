@@ -3466,3 +3466,94 @@ body[data-currency="kes"] [data-currency-amount="eur"] { display: none !importan
 .service-card__table td [data-currency-amount] {
   display: inline-block;
 }
+
+.consent-trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  background: #111111;
+  color: #f5f5f5;
+  border-top: 1px solid #333333;
+  padding: 1.25rem 1.5rem;
+}
+
+.consent-banner[hidden] {
+  display: none !important;
+}
+
+.consent-banner__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.consent-banner__text {
+  margin: 0;
+  flex: 1 1 480px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #e0e0e0;
+}
+
+.consent-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.consent-banner__prefs {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #2b2b2b;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.consent-banner__prefs[hidden] {
+  display: none !important;
+}
+
+.consent-pref {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+}
+
+.consent-btn {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #ffffff;
+}
+
+.consent-btn--equal {
+  background: #ffffff;
+  color: #111111;
+}
+
+.consent-btn--secondary {
+  background: transparent;
+  color: #ffffff;
+}
