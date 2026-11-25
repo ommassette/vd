@@ -77,10 +77,16 @@
         {% for testimonial in testimonials %}
           <blockquote class="testimonial {% if forloop.first %}is-active{% endif %}">
             <p class="testimonial__quote">"{{ testimonial.quote }}"</p>
-            <footer class="testimonial__meta">
-              <span class="testimonial__author">{{ testimonial.author }}</span>
-              <span class="testimonial__position">{{ testimonial.position }}</span>
-            </footer>
+           {% if testimonial.author or testimonial.position %}
+<footer class="testimonial__meta">
+  {% if testimonial.author %}
+    <span class="testimonial__author">{{ testimonial.author }}</span>
+  {% endif %}
+  {% if testimonial.position %}
+    <span class="testimonial__position">{{ testimonial.position }}</span>
+  {% endif %}
+</footer>
+{% endif %}
           </blockquote>
         {% endfor %}
       </div>
