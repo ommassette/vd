@@ -265,6 +265,12 @@ class ContactMessage(models.Model):
 
 
 class FeedbackMessage(models.Model):
+    """
+    DEPRECATED — no longer receives submissions from the public contact form.
+    Retained to preserve existing feedback records. The contact page now links
+    directly to Google Reviews. Safe to remove in a future migration once all
+    existing records have been exported or discarded.
+    """
     position = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     feedback = models.TextField(blank=True, null=True)

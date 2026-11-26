@@ -3557,3 +3557,28 @@ body[data-currency="kes"] [data-currency-amount="eur"] { display: none !importan
   background: transparent;
   color: #ffffff;
 }
+/* Google Review CTA (replaces feedback form) */
+.feedback-review-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.85rem 0;
+  font-family: inherit;
+  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink);
+  transition: letter-spacing 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+}
+
+.feedback-review-btn:hover {
+  letter-spacing: 0.24em;
+  opacity: 0.7;
+}
+
+.feedback-review-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}

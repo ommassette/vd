@@ -28,6 +28,7 @@ from .models import (
     ServiceItem,
     ServicesPageContent,
     Testimonial,
+    ConsentLog,
 )
 
 logger = logging.getLogger(__name__)
@@ -58,9 +59,6 @@ def services(request):
 @cache_page(60 * 15)
 @require_http_methods(["GET"])
 def portfolio(request):
-    # select_related('case_study') — LEFT JOIN so projects without a case study
-    # still appear in the list, and no N+1 queries when the template checks
-    # {% if project.case_study %} per project.
     projects = list(
         Project.objects
         .select_related('case_study')
@@ -142,53 +140,6 @@ def contact(request):
             else:
                 request.session['contact_error'] = "Please complete all steps and provide a phone number or email."
                 return redirect('contact')
-
-        elif 'position' in request.POST:
-            position = request.POST.get('position')
-            email = request.POST.get('email')
-            feedback = request.POST.get('feedback')
-
-            if position and feedback:
-                FeedbackMessage.objects.create(
-                    position=position,
-                    email=email,
-                    feedback=feedback
-                )
-                logger.info("Feedback saved successfully.")
-
-                try:
-                    send_mail(
-                        subject="New Feedback Submission - Valgus Designs",
-                        message=f"Position/Author: {position}\nEmail: {email or 'N/A'}\nFeedback: {feedback}",
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[settings.EMAIL_HOST_USER],
-                        fail_silently=True,
-                    )
-                except Exception as e:
-                    logger.error(f"Failed to send admin feedback notification: {e}")
-
-                if email:
-                    try:
-                        send_mail(
-                            subject="Thank you for your feedback - Valgus Designs",
-                            message=(
-                                f"Hello,\n\n"
-                                f"Thank you for sharing your feedback with Valgus Designs.\n\n"
-                                f"We truly appreciate your insights and input.\n\n"
-                                f"Best regards,\n"
-                                f"Valgus Designs Team"
-                            ),
-                            from_email=settings.DEFAULT_FROM_EMAIL,
-                            recipient_list=[email],
-                            fail_silently=True,
-                        )
-                    except Exception as e:
-                        logger.error(f"Failed to send feedback user confirmation: {e}")
-
-                messages.success(request, "Feedback submitted successfully.")
-                return redirect('contact')
-            else:
-                messages.error(request, "Please fill out all feedback fields.")
 
     contact_success = request.session.pop('contact_success', None)
     contact_error = request.session.pop('contact_error', None)
@@ -282,12 +233,11 @@ def chatbot_query_view(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
+
 @cache_page(60 * 15)
 @require_http_methods(["GET"])
 def impressum(request):
     return render(request, 'impressum.html')
-
-from .models import ConsentLog
 
 
 def _get_client_ip(request):
