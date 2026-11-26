@@ -7,124 +7,169 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Primary SEO Meta Tags -->
-  <title>{% block title %}Valgus Creative | Web Development & Branding Agency for Kenya, Germany & France{% endblock %}</title>
-  <meta name="title" content="Valgus Creative | Web Development & Branding Agency for Kenya, Germany & France">
-  <meta name="description" content="Valgus Creative is a web development, content management, and full-stack branding agency based in Nairobi, Kenya, serving businesses across Kenya, Germany, and France with GDPR/DSGVO-compliant websites and European print-ready brand identities.">
-  <meta name="keywords" content="web development Nairobi, web design Kenya, web development Germany, DSGVO compliant web design Germany, web agency France, RGPD web design France, content management, creative branding agency, Charte Graphique, Corporate Design, Valgus Creative">
+  <title>{% block title %}Valgus Creative | Best Creative Agency in Nairobi, Kenya{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Valgus Creative is the best creative agency in Nairobi, Kenya—building custom web platforms, CMS systems, and brand identities for Kenya, Germany & France.{% endblock %}">
   <meta name="author" content="Valgus Creative">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://valgusdesigns.com/">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="{% block canonical %}https://valgusdesigns.com{{ request.path }}{% endblock %}">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://valgusdesigns.com/">
-  <meta property="og:title" content="Valgus Creative | Web Development & Branding Agency for Kenya, Germany & France">
-  <meta property="og:description" content="Nairobi-based web development, content management, and full-stack branding agency serving clients across Kenya, Germany, and France.">
-  <meta property="og:image" content="https://res.cloudinary.com/dl4el6qws/image/upload/v1794147648/valgus_creative_3_s75dlx.png">
+  <meta property="og:site_name" content="Valgus Creative">
+  <meta property="og:locale" content="en_KE">
+  <meta property="og:url" content="https://valgusdesigns.com{{ request.path }}">
+  <meta property="og:title" content="{% block og_title %}Valgus Creative | Best Creative Agency in Nairobi, Kenya{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Best creative agency in Nairobi, Kenya for custom web development, CMS platforms, and full-stack branding across Kenya, Germany, and France.{% endblock %}">
+  <meta property="og:image" content="https://res.cloudinary.com/dl4el6qws/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/v1794147648/valgus_creative_3_s75dlx.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Valgus Creative — Creative Agency in Nairobi, Kenya">
 
   <!-- Twitter / X -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://valgusdesigns.com/">
-  <meta property="twitter:title" content="Valgus Creative | Web Development & Branding for Kenya, Germany & France">
-  <meta property="twitter:description" content="Web development, content management, and full-stack branding agency based in Nairobi, serving businesses in Kenya, Germany, and France.">
-  <meta property="twitter:image" content="https://res.cloudinary.com/dl4el6qws/image/upload/v1794147648/valgus_creative_3_s75dlx.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}Valgus Creative | Best Creative Agency in Nairobi, Kenya{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}Best creative agency in Nairobi, Kenya for custom web development, CMS platforms, and full-stack branding across Kenya, Germany, and France.{% endblock %}">
+  <meta name="twitter:image" content="https://res.cloudinary.com/dl4el6qws/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/v1794147648/valgus_creative_3_s75dlx.png">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dl4el6qws/image/upload/v1794153683/Untitled_Design_2_fyyyrk.png" />
+  <!-- Optimized Cloudinary Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/dl4el6qws/image/upload/f_png,q_auto,w_32,h_32/v1794153683/Untitled_Design_2_fyyyrk.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://res.cloudinary.com/dl4el6qws/image/upload/f_png,q_auto,w_180,h_180/v1794153683/Untitled_Design_2_fyyyrk.png" />
 
   <link rel="stylesheet" href="{% static 'styles.css' %}" />
 
-  <!-- Local Business & International GEO Structured Data (JSON-LD) -->
+  <!-- Local Business & Entity Structured Data (JSON-LD) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "@id": "https://valgusdesigns.com/#organization",
-    "name": "Valgus Designs",
-    "alternateName": ["Valgus Creative", "Valgus Creative Studio"],
-    "url": "https://valgusdesigns.com/",
-    "logo": "https://res.cloudinary.com/dl4el6qws/image/upload/v1794147648/valgus_creative_3_s75dlx.png",
-    "image": "https://res.cloudinary.com/dl4el6qws/image/upload/v1794147648/valgus_creative_3_s75dlx.png",
-    "description": "Creative agency based in Nairobi, Kenya delivering custom web development, content management systems, and full-stack corporate branding for businesses across Kenya, Germany, and France, including GDPR/DSGVO/RGPD-compliant web architecture and DIN-standard print identities.",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Waiyaki Way",
-      "addressLocality": "Westlands, Nairobi",
-      "addressRegion": "Nairobi",
-      "addressCountry": "KE"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": -1.2646,
-      "longitude": 36.8028
-    },
-    "priceRange": "$$",
-    "currenciesAccepted": "KES, EUR, USD",
-    "areaServed": [
+    "@graph": [
       {
-        "@type": "Country",
-        "name": "Kenya"
-      },
-      {
-        "@type": "City",
-        "name": "Nairobi"
-      },
-      {
-        "@type": "Country",
-        "name": "Germany"
-      },
-      {
-        "@type": "Town",
-        "name": "Prien am Chiemsee"
-      },
-      {
-        "@type": "Country",
-        "name": "France"
-      }
-    ],
-    "knowsAbout": [
-      "Web Development",
-      "Custom Content Management Systems",
-      "Full Stack Creative Branding",
-      "GDPR and DSGVO Compliant Web Design",
-      "RGPD Compliant Web Architecture",
-      "WCAG 2.1 AA Web Accessibility",
-      "European DIN Standard Print Branding",
-      "Corporate Design and Charte Graphique"
-    ],
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Agency Services",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Web Development",
-            "description": "Fast, mobile-first custom websites built for businesses in Kenya, Germany, and France with GDPR/DSGVO/RGPD compliance, local asset hosting, and WCAG 2.1 AA accessibility.",
-            "areaServed": ["Kenya", "Germany", "France"]
-          }
+        "@type": "WebSite",
+        "@id": "https://valgusdesigns.com/#website",
+        "url": "https://valgusdesigns.com/",
+        "name": "Valgus Creative",
+        "alternateName": ["Valgus Designs", "Best Creative Agency Nairobi", "Best Creative Agency Kenya"],
+        "publisher": {
+          "@id": "https://valgusdesigns.com/#organization"
         },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Content Management",
-            "description": "Easy-to-use custom content management dashboards with role-based staff permissions and EU-compliant data handling.",
-            "areaServed": ["Kenya", "Germany", "France"]
-          }
+        "inLanguage": "en-KE"
+      },
+      {
+        "@type": ["ProfessionalService", "Organization"],
+        "@id": "https://valgusdesigns.com/#organization",
+        "name": "Valgus Creative",
+        "legalName": "Valgus Designs",
+        "alternateName": [
+          "Valgus Designs",
+          "Valgus Creative Studio",
+          "Best Creative Agency Nairobi",
+          "Best Creative Agency Kenya"
+        ],
+        "url": "https://valgusdesigns.com/",
+        "telephone": "+254740402400",
+        "email": "valguscreative@proton.me",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+254740402400",
+          "email": "valguscreative@proton.me",
+          "contactType": "customer service",
+          "areaServed": ["KE", "DE", "FR"],
+          "availableLanguage": ["English"]
         },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Full Stack Creative Branding",
-            "description": "Complete brand identity systems, brand books, corporate design guidelines (Charte Graphique), and DIN-standard print stationery for Kenyan and European businesses.",
-            "areaServed": ["Kenya", "Germany", "France"]
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://res.cloudinary.com/dl4el6qws/image/upload/f_auto,q_auto/v1794147648/valgus_creative_3_s75dlx.png"
+        },
+        "image": "https://res.cloudinary.com/dl4el6qws/image/upload/f_auto,q_auto,w_1200/v1794147648/valgus_creative_3_s75dlx.png",
+        "description": "Valgus Creative is a creative agency in Nairobi, Kenya delivering custom web development, content management systems, and full-stack corporate branding for businesses across Kenya, Germany, and France.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Westlands, Nairobi",
+          "addressRegion": "Nairobi County",
+          "postalCode": "00100",
+          "addressCountry": "KE"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": -1.26460,
+          "longitude": 36.80280
+        },
+        "hasMap": "https://share.google/lBAa6hEgBuoNXeV3r",
+        "priceRange": "$$",
+        "currenciesAccepted": "KES, EUR, USD",
+        "paymentAccepted": "M-Pesa, Bank Transfer, Credit Card",
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Nairobi",
+            "sameAs": "https://www.wikidata.org/wiki/Q3870"
+          },
+          {
+            "@type": "Country",
+            "name": "Kenya",
+            "sameAs": "https://www.wikidata.org/wiki/Q114"
+          },
+          {
+            "@type": "Country",
+            "name": "Germany",
+            "sameAs": "https://www.wikidata.org/wiki/Q183"
+          },
+          {
+            "@type": "Country",
+            "name": "France",
+            "sameAs": "https://www.wikidata.org/wiki/Q142"
           }
+        ],
+        "sameAs": [
+          "https://share.google/lBAa6hEgBuoNXeV3r",
+          "https://www.instagram.com/valguscreative/",
+          "https://github.com/ommassette"
+        ],
+        "knowsAbout": [
+          "Creative Agency Nairobi",
+          "Branding Agency Kenya",
+          "Web Development Nairobi",
+          "Custom Content Management Systems",
+          "Full Stack Creative Branding",
+          "GDPR and DSGVO Compliant Web Design",
+          "RGPD Compliant Web Architecture",
+          "WCAG 2.1 AA Web Accessibility",
+          "Corporate Design and Charte Graphique"
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Creative Agency Services in Nairobi & Kenya",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Web Development in Nairobi & Kenya",
+                "description": "Custom, high-speed web applications and websites built for businesses in Nairobi, Kenya, Germany, and France with GDPR/DSGVO/RGPD compliance and WCAG 2.1 AA accessibility.",
+                "areaServed": ["Nairobi", "Kenya", "Germany", "France"]
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Custom Content Management Systems (CMS)",
+                "description": "Custom content management dashboards with role-based permissions and EU/Kenyan data compliance.",
+                "areaServed": ["Nairobi", "Kenya", "Germany", "France"]
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Full Stack Creative Branding & Corporate Design",
+                "description": "Complete brand identity systems, brand books, corporate design guidelines (Charte Graphique), and DIN-standard print stationery.",
+                "areaServed": ["Nairobi", "Kenya", "Germany", "France"]
+              }
+            }
+          ]
         }
-      ]
-    }
+      }
+    ]
   }
   </script>
   {% block extra_head %}{% endblock %}
