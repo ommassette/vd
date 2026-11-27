@@ -91,7 +91,7 @@
   <a href="{% url 'contact' %}" class="floating-cta">REACH OUT</a>
 
   <!-- Floating Bottom-Right Saimon AI Chat Widget -->
-  <div class="saimon-widget">
+  <!-- <div class="saimon-widget">
     <div onclick="toggleSaimonChat()" class="saimon-trigger-wrap" title="Ask Saimon">
       <img src="{% static 'logo.png' %}" alt="Saimon AI" class="saimon-logo-img">
     </div>
@@ -106,16 +106,16 @@
         <div class="saimon-msg saimon-msg--bot">
           Initialized. Inquire regarding our service tiers or technical specifications. Please do not upload sensitive information. Saimon is a beta AI assistant and may not always provide accurate responses.
         </div>
-      </div>
+      </div> -->
 
       <!-- Completely stripped form tag to prevent browser/script reloads -->
-      <div id="saimon-input-box" class="saimon-form">
+      <!-- <div id="saimon-input-box" class="saimon-form">
         {% csrf_token %}
         <input type="text" id="saimon-input" placeholder="Type query..." class="saimon-input" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); event.stopPropagation(); sendSaimonMessage(); }">
         <button type="button" onclick="event.preventDefault(); event.stopPropagation(); sendSaimonMessage();" class="saimon-submit">Send</button>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <style>
     .floating-cta {
@@ -138,7 +138,7 @@
     }
   </style>
 
-  <script>
+  <!-- <script>
   function toggleSaimonChat() {
       const drawer = document.getElementById('saimon-drawer');
       drawer.classList.toggle('hidden');
@@ -197,5 +197,5 @@
   function escapeHtml(text) {
       return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
-  </script>
+  </script> -->
 {% endblock %}
