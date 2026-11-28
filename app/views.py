@@ -168,15 +168,14 @@ def terms(request):
 @cache_page(60 * 15)
 @require_http_methods(["GET"])
 def robots_txt(request):
-    content = """User-agent: *
-Allow: /
-Disallow: /siri/
-Disallow: /static/admin/
-
-Host: https://valgusdesigns.com
-Sitemap: https://valgusdesigns.com/sitemap.xml
-"""
-    return HttpResponse(content.strip(), content_type="text/plain")
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /static/admin/",
+        "",
+        f"Sitemap: {request.scheme}://{request.get_host()}/sitemap.xml",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
 
 
 @cache_page(60 * 15)
