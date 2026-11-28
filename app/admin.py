@@ -305,8 +305,7 @@ class ServiceDocumentAdmin(admin.ModelAdmin):
 from django.contrib import admin
 from .models import ConsentLog
 
-
-@admin.register(ConsentLog)
+@admin.register(ConsentLog, site=admin_site)
 class ConsentLogAdmin(admin.ModelAdmin):
     list_display = (
         "consent_id",
